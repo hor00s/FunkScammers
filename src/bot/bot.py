@@ -1,4 +1,5 @@
 import spacy
+from typing import Iterable
 
 
 class Bot:
@@ -21,7 +22,7 @@ class Bot:
     def password(self) -> str:
         return self._passwd
 
-    def is_sus(self, text: str, data: list[str], top_match: float) -> bool:
+    def is_sus(self, text: str, data: Iterable[str], top_match: float) -> bool:
         return any(
             self._nlp(sentence).similarity(self._nlp(text)) > top_match
             for sentence in data

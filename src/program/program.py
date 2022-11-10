@@ -1,5 +1,6 @@
 import sys
 from .cli import cli
+from .mainloop import mainloop
 
 
 def main(*args, **kwargs):
@@ -8,5 +9,7 @@ def main(*args, **kwargs):
         sys.exit(
             cli(*args, **kwargs)
         )
+    else:
+        mainloop()
 
     return 0

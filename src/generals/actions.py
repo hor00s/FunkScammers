@@ -15,10 +15,10 @@ def read_file(path: Path) -> str:
         return f.read()
 
 
-def ascii_filter(sentence: str, min_range: int, max_range: int) -> str:
+def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
     return ''.join(
         i if min_range <= ord(i) <= max_range
-        else '' for i in sentence
+        else '' for i in sent
     )
 
 
