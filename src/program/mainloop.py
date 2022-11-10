@@ -16,6 +16,14 @@ from dotenv import (
 load_dotenv(find_dotenv())
 
 
+def delete_bad_replies(redditor: praw.reddit.Redditor, max_downvotes: int):
+    comments = redditor.comments.new(limit=None)
+
+    for comment in comments:
+        if comment.score < max_downvotes:
+            comment.delete()
+
+
 # TODO: Put an @error_log function
 def mainloop():
     settings = Settings(SETTINGS)
@@ -34,8 +42,11 @@ def mainloop():
         username=bot.name,
     )
 
+    redditor = reddit.redditor(bot.name)
+
     running = True
     while running:
+        delete_bad_replies(redditor, int(settings.get('max_downvotes')))
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
         for sub in followed_subs:
@@ -54,4 +65,4 @@ def mainloop():
                             if isinstance(reply, MoreComments):
                                 continue
                             if bot.is_sus(reply.body, samples, sus_text_above):
-                                print("We've a sus top level comment")
+                                print("We've a sus reply")
