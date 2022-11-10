@@ -3,17 +3,19 @@ import os
 
 type_commands = (
     "mypy general/actions.py --strict",
+    "mypy general/constants.py --strict",
 )
 
 unittest_commands = (
     "python3 -m unittest general/test_actions.py",
 )
 
+
 def cli(*args, **kwargs):
-    if args[1] == 'unit': # Shift fot unit test
+    if args[1] == 'unit':  # Shift fot unit test
         for i in unittest_commands:
             os.system(i)
-    elif args[1] == 'type': # Short for type checking\
+    elif args[1] == 'type':  # Short for type checking\
         for i in type_commands:
             os.system(i)
     elif args[1] == 'allcheck':

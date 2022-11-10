@@ -8,6 +8,5 @@ def main(*args, **kwargs):
             cli(*args, **kwargs)
         )
 
-
     print('mainloop')
     return 0

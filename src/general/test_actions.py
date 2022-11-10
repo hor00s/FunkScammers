@@ -10,7 +10,7 @@ class TestActions(unittest.TestCase):
         lower_limit = 0
 
         senteces = [
-            f'this ✅ is a test📥',
+            'this ✅ is a test📥',
             f'Test upper limit ->{chr(upper_limit)}',
             f'test lower {chr(lower_limit)}limit',
             f'test 1 above limit {chr(upper_limit+1)}',
@@ -24,7 +24,9 @@ class TestActions(unittest.TestCase):
             'Test way over limit'
         ]
 
-        data = [ascii_filter(sentence, lower_limit, upper_limit) for sentence in senteces]
+        data = [
+            ascii_filter(sentence, lower_limit, upper_limit)
+            for sentence in senteces
+        ]
 
         self.assertEqual(data, expected)
-        
