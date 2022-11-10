@@ -1,4 +1,6 @@
 .mypy
 **__pycache__/
 venv
-install
+install.txt
+.testsettings.json
+.env

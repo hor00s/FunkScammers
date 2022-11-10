@@ -1,6 +1,6 @@
 #!/bin/env python3
 import sys
-from bot.bot import main
+from program.program import main
 
 
 if __name__ == '__main__':

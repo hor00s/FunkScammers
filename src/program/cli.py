@@ -4,10 +4,13 @@ import os
 type_commands = (
     "mypy general/actions.py --strict",
     "mypy general/constants.py --strict",
+    "mypy general/settings.py --strict",
+    "mypy bot/bot.py --strict",
 )
 
 unittest_commands = (
     "python3 -m unittest general/test_actions.py",
+    "python3 -m unittest bot/test_bot.py",
 )
 
 
