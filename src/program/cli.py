@@ -20,6 +20,9 @@ settings_manager = Settings(SETTINGS)
 
 
 def cli(*args, **kwargs):
+    """The cli of the. This is it runs
+    if the program was triggered with command line arguments
+    """
     # ./funcscammers unit (run unittest tests)
     if args[1] == 'unit':
         for i in unittest_commands:

@@ -17,6 +17,15 @@ load_dotenv(find_dotenv())
 
 
 def delete_bad_replies(redditor: praw.reddit.Redditor, max_downvotes: int):
+    """Check if a reply that the bot made has less that
+    `max_downvotes` and delete it
+
+    :param redditor: An instance of the account
+    :type redditor: praw.reddit.Redditor
+    :param max_downvotes: The ammount of downvotes enough\
+        to trigger a deletion
+    :type max_downvotes: int
+    """
     comments = redditor.comments.new(limit=None)
 
     for comment in comments:
@@ -26,6 +35,9 @@ def delete_bad_replies(redditor: praw.reddit.Redditor, max_downvotes: int):
 
 # TODO: Put an @error_log function
 def mainloop():
+    """Mainloop of the program. This is where the actual
+    bot operates.
+    """
     settings = Settings(SETTINGS)
     sus_text_above = float(settings.get('sus_text_above'))
 

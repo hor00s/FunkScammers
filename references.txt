@@ -1,1 +1,2 @@
 PRAW - Read the Docs: https://praw.readthedocs.io/en/stable/
+en_core_web_lg model: https://www.datasciencelearner.com/how-to-install-en_core_web_lg-spacy-model/

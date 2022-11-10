@@ -4,7 +4,11 @@ from .mainloop import mainloop
 
 
 def main(*args, **kwargs):
-    # If the program runs with command line aruments it will jump to the cli
+    """
+    The main function of the program which will trigger the
+    appropriate function depending on whether the application
+    was triggered with command line arguments or not
+    """
     if len(args) > 1:
         sys.exit(
             cli(*args, **kwargs)

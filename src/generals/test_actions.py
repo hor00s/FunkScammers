@@ -7,7 +7,6 @@ from .actions import (
 
 
 class TestActions(unittest.TestCase):
-    # ACTIONS
     def test_ascii_filter(self):
         upper_limit = 127
         lower_limit = 0
