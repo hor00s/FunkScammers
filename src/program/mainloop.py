@@ -19,7 +19,7 @@ load_dotenv(find_dotenv())
 # TODO: Put an @error_log function
 def mainloop():
     settings = Settings(SETTINGS)
-    sus_text_above = settings.get('sus_text_above')
+    sus_text_above = float(settings.get('sus_text_above'))
 
     bot = Bot(
         username=os.environ['username'],
@@ -35,7 +35,6 @@ def mainloop():
     )
 
     running = True
-    loops = 0
     while running:
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
@@ -56,5 +55,3 @@ def mainloop():
                                 continue
                             if bot.is_sus(reply.body, samples, sus_text_above):
                                 print("We've a sus top level comment")
-        loops += 1
-        print(loops)
