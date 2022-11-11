@@ -48,6 +48,14 @@ def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
 
 
 def load_samples(directory: Path) -> Generator[str, None, None]:
+    """Load all .txt (or similar) samples from a directory
+    with plain `.read()`
+
+    :param directory: The directory where the samples are located
+    :type directory: Path
+    :yield: Each iteration yields the whole conent of one file
+    :rtype: Generator[str, None, None]
+    """    
     return (
         ascii_filter(
             read_file(
