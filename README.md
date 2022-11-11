@@ -63,29 +63,46 @@ To run this project, you will need to add the following environment variables to
 
 `client_id`
 
+`secret`
+
 `Account's username`
 
-`Account's password`
+`user_agent`
 
-`App's name`
+`Account's password`
 
 
 ## Contributing
 
 Contributions are always welcome!
 
+- Python version used: 3.10.x
+- Pip version used: 22.3.x
+
 Anyone may Contribute to this app by the standard *fork -> clone -> edit -> Pull request*.
-See Github's very cool project: [good-first-contribution](https://github.com/firstcontributions/first-contributions) if you need any help!
+See Github's very cool project [good-first-contribution](https://github.com/firstcontributions/first-contributions) if you need any help for the steps you have to take!
 You may name the branch with the following format: `<your_name>_<commit_type>`
 
-Also make sure to run all the tests (See next section) before and after your contribution and update documentation if necessary
+Make sure to run all the tests (See next section) before and after your contribution and update documentation if necessary.
+It's also worth mentioning that the program follows the `sphinx-notype` docstring format for all the functions.
+
+### Ideas for contribution
+- Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
+- Write better docstrings throughout the program
+- Make the documentation better
 
 ## Running Tests
 
 This project is currently tested with `unittests` and it follows `mypy`'s `--strict` rules. You can take the following shortcut for type and unittesting:
 
 ```bash
-  ./funkscammers unit # Run all the unittests for every module
-  ./funkscammers type # To run all type cheking
+  ./funkscammers unit      # Run all the unittests for every module
+  ./funkscammers type      # To run all type cheking
   ./funkscammers allchecks # To run both unittests and typechecks
 ```
+
+## Authors
+* [hor00s](https://github.com/hor00s)
+
+## Contributors
+* N/A
