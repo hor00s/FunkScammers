@@ -18,15 +18,15 @@ More documentation will be added later!
 
 ## FAQ
 
-#### Where this bot operates?
+#### ~ Where this bot operates?
 
 The bot operates on the subs it folllows
 
-#### What the bot tries to detect?
+#### ~ What the bot tries to detect?
 
-The bot, with the help of [en_core_web_lg model](https://www.datasciencelearner.com/how-to-install-en_core_web_lg-spacy-model/) tries to detect posts/comments/replies that seem sus and replies to them
+The bot, with the help of [en_core_web_lg model](https://www.datasciencelearner.com/how-to-install-en_core_web_lg-spacy-model/) tries to detect posts/comments/replies (based on their [Semantic similarity](https://en.wikipedia.org/wiki/Semantic_similarity) between a bunch of samples) that seem sus and replies to them
 
-#### Why these subreddits?
+#### ~ Why these subreddits?
 
 The bot mostly follows *learning related* subreddits where I, as the author, personally think that enthusiastic people that want to learn something, may fall to a trap on some *great offer* / *fast learning opportunity* that seems to good to be true 
 

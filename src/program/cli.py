@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 from generals import (
     Settings,
     SETTINGS,
+    SCAM_SAMPLES,
 )
 
 type_commands = (
@@ -48,5 +50,18 @@ def cli(*args, **kwargs):
             key = args[3][1:]
             value = args[4]
             settings_manager.set(key, value)
+
+    # ./funcscammers sample "The text that is supposed to be in the file"
+    # (preferably in one line)"
+    elif args[1] == 'sample':
+        if len(args) > 3:
+            raise ValueError('`samples` command takes the\
+text in double quotes (`"text that you want to write"`)')
+
+        current_samples = os.listdir(SCAM_SAMPLES)
+        find_next_num = max(int(i[:i.index('.')]) for i in current_samples) + 1
+        next_file = f"{find_next_num}.txt"
+        with open(Path(f"{SCAM_SAMPLES}/{next_file}"), mode='w') as f:
+            f.write(args[2])
 
     return 0

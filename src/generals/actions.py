@@ -55,7 +55,7 @@ def load_samples(directory: Path) -> Generator[str, None, None]:
     :type directory: Path
     :yield: Each iteration yields the whole conent of one file
     :rtype: Generator[str, None, None]
-    """    
+    """
     return (
         ascii_filter(
             read_file(
