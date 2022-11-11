@@ -30,11 +30,12 @@ class Bot:
     def password(self) -> str:
         return self._passwd
 
-    def is_sus(self, text: str, data: Iterable[str], top_match: float) -> bool:
+    def is_sus(self, text: str, samples: Iterable[str],
+               top_match: float, total_matches: int) -> bool:
         """Based on `en_core_web_lg` AI language proccessing model
         (more info in `references.txt`) of `spacy` library, this function
-        checks whether the `text` provided matches **at least one**
-        of the samples (in range of 0.0 - 1.0) above the limit (`top_match`)
+        checks whether the `text` provided matches with (more or equal)
+        ammount of samples above the match rate (`top_match`)
 
         (This may change in the future based on the success rate of the
         bot to match **at least two** above the limit)
@@ -48,11 +49,16 @@ class Bot:
         :param top_match: The matching rate (0.0 - 1.0)\
             that the bot detects
         :type top_match: float
+        :param total_matches: The total ammount of samples the `text`\
+            needs to be matched agnainst in order to be tagged as sus
+        :type data: Iterable[str]
         :return: Wheather the sentence matched above\
             *x* with any of the samples
         :rtype: bool
         """
-        return any(
-            self._nlp(sentence).similarity(self._nlp(text)) > top_match
-            for sentence in data
-        )
+        return len(
+            tuple(filter(
+                lambda sentence: self._nlp(sentence)
+                .similarity(self._nlp(text)) > top_match, samples
+            ))
+        ) >= total_matches

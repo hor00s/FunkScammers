@@ -40,6 +40,7 @@ def mainloop():
     """
     settings = Settings(SETTINGS)
     sus_text_above = float(settings.get('sus_text_above'))
+    total_matches = int(settings.get("total_matches"))
 
     bot = Bot(
         username=os.environ['username'],
@@ -64,17 +65,20 @@ def mainloop():
         for sub in followed_subs:
             sub_name = str(sub)
             for post in reddit.subreddit(sub_name).new(limit=None):
-                if bot.is_sus(post.selftext, samples, sus_text_above):
+                if bot.is_sus(post.selftext, samples, sus_text_above, total_matches):
                     print("We've a sus post")
+                    print(post.selftext)
 
                 for comment in post.comments:
                     if isinstance(comment, MoreComments):
                         continue
-                    if bot.is_sus(comment.body, samples, sus_text_above):
+                    if bot.is_sus(comment.body, samples, sus_text_above, total_matches):
                         print("We've a sus top level comment")
+                        print(comment.body)
 
                         for reply in comment.replies:
                             if isinstance(reply, MoreComments):
                                 continue
-                            if bot.is_sus(reply.body, samples, sus_text_above):
+                            if bot.is_sus(reply.body, samples, sus_text_above, total_matches):
                                 print("We've a sus reply")
+                                print(reply.body)

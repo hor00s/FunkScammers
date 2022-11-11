@@ -89,6 +89,7 @@ It's also worth mentioning that the program follows the `sphinx-notype` docstrin
 Finally, contributors may add their name with a hyperlink to their profile at the **Contributors** section!
 
 ### Ideas for contribution
+- Provide some scam posts/comments to train the model
 - Find/Make a cool logo and include it at the top 
 - Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
 - Write better docstrings throughout the program
