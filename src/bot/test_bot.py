@@ -14,6 +14,7 @@ class TestBot(unittest.TestCase):
 
     def test_is_sus(self):
         max_num = 0.7
+        total_matches = 1
         data = [
             'This text is weird',
             'A boy with a red shirt',
@@ -22,10 +23,10 @@ class TestBot(unittest.TestCase):
 
         # True case
         text = 'This text is sus'
-        is_sus = self.bot.is_sus(text, data, max_num)
-        self.assertTrue(is_sus)
+        is_sus = self.bot.is_sus(text, data, max_num, total_matches)
+        self.assertTrue(is_sus, msg="The bot can be a little un-predicted!")
 
         # False case
         text = 'A completely unrelated text document'
-        is_sus = self.bot.is_sus(text, data, max_num)
-        self.assertFalse(is_sus)
+        is_sus = self.bot.is_sus(text, data, max_num, total_matches)
+        self.assertFalse(is_sus, msg="The bot can be a little un-predicted!")

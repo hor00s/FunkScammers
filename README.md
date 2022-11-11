@@ -94,6 +94,7 @@ Finally, contributors may add their name with a hyperlink to their profile at th
 - Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
 - Write better docstrings throughout the program
 - Make the documentation better
+- Refactor the `src/program/mainloop.py`
 
 ## Running Tests
 

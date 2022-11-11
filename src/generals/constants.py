@@ -2,10 +2,12 @@ from pathlib import Path
 
 
 __all__ = [
-    'SCAM_SAMPLES',
     'SETTINGS',
+    'SCAM_SAMPLES',
+    'ERROR_LOGGER',
 ]
 
 
+SETTINGS:     Path = Path('../settings.json')
 SCAM_SAMPLES: Path = Path('../samples')
-SETTINGS: Path = Path('../settings.json')
+ERROR_LOGGER: Path = Path('../error_logs.txt')

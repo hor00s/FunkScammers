@@ -4,3 +4,4 @@ venv
 install.txt
 .testsettings.json
 .env
+error_logs.txt

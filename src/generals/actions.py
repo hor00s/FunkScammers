@@ -1,13 +1,53 @@
 import os
+import traceback
 from pathlib import Path
-from typing import Generator
+from typing import (
+    Generator,
+    Callable,
+    Any,
+)
 
 
 __all__ = [
+    'error_logger',
     'read_file',
     'ascii_filter',
     'load_samples',
+    'find_next_sample',
 ]
+
+
+def write_error(error: Exception, path: Path) -> None:
+    with open(path, mode='a') as f:
+        error_format = f"""
+---------------------------
+Short error: {error}
+
+Detailed: {traceback.format_exc()}
+---------------------------
+
+        """
+        f.write(error_format)
+
+
+def create_error_logger(path: Path) -> None:
+    if not os.path.exists(path):
+        with open(path, mode='w') as _: ...
+
+
+def error_logger(path: Path) -> Callable[[Any], Any]:
+    create_error_logger(path)
+
+    def decorator(func: Callable[[Any], int]) -> Callable[[Any], Any] | int:
+        def wrapper(*args: Any, **kwargs: Any) -> Callable[[Any], Any] | int:
+            try:
+                return func(*args, **kwargs)
+            except Exception as err:
+                print(err)
+                write_error(err, path)
+                return 1
+        return wrapper
+    return decorator
 
 
 def read_file(path: Path) -> str:
@@ -64,3 +104,20 @@ def load_samples(directory: Path) -> Generator[str, None, None]:
         )
         for file in os.listdir(directory)
     )
+
+
+def find_next_sample(samples_dir: Path) -> str:
+    """Since `scam_samples` directory contains files in row,
+    (1.txt, 2.txt ..) this function will find the last .txt
+    and return it's number plus 1. In this case it would return
+    `3.txt`
+
+    :param samples_dir: The directory where the samples are located
+    :type samples_dir: Path
+    :return: The next number in increasing order
+    :rtype: str
+    """
+    current_samples = os.listdir(samples_dir)
+    find_next_num = max(int(i[:i.index('.')]) for i in current_samples) + 1
+    next_file = f"{find_next_num}.txt"
+    return next_file

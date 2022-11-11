@@ -2,11 +2,15 @@ import json
 import unittest
 from .settings import Settings
 from .actions import (
-    ascii_filter
+    ascii_filter,
+    find_next_sample
 )
 
 
 class TestActions(unittest.TestCase):
+    def setUp(self) -> None:
+        self.scam_samples = '../samples'
+
     def test_ascii_filter(self):
         upper_limit = 127
         lower_limit = 0
@@ -32,6 +36,11 @@ class TestActions(unittest.TestCase):
         ]
 
         self.assertEqual(data, expected)
+
+    def test_find_next_sample(self):
+        # TODO: Find an automatic way to test this. In it's current stage
+        # we've to manually change the expected result
+        self.assertEqual(find_next_sample(self.scam_samples), '6.txt')
 
 
 class TestSettings(unittest.TestCase):
