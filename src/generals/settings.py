@@ -25,7 +25,7 @@ class Settings:
         return f"<Settings({self.all})>"
 
     @property
-    def all(self) -> dict:
+    def all(self) -> dict[Any, Any]:
         """Load all the settings contained in the
         provided file
 
