@@ -86,7 +86,10 @@ You may name the branch with the following format: `<your_name>_<commit_type>`
 Make sure to run all the tests (See next section) before and after your contribution and update documentation if necessary.
 It's also worth mentioning that the program follows the `sphinx-notype` docstring format for all the functions.
 
+Finally, contributors may add their name with a hyperlink to their profile at the **Contributors** section!
+
 ### Ideas for contribution
+- Find/Make a cool logo and include it at the top 
 - Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
 - Write better docstrings throughout the program
 - Make the documentation better
