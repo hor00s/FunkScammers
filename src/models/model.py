@@ -5,6 +5,9 @@ from sqlite3 import (
 )
 
 
+__all__ = ['Model']
+
+
 class ConnectionManager:
     def __init__(self, name: str) -> None:
         self.name = name
@@ -41,7 +44,7 @@ class Model:
             f"{n} {t}," for (n, t) in table.items()
         )[:-1]
 
-    def _execute(self, query: str, fetch: bool = False) -> Any:
+    def execute(self, query: str, fetch: bool = False) -> Any:
         """Execute a query
 
         :param query: SQL Query
@@ -67,7 +70,7 @@ class Model:
             {self.table_vals}
         )
         """
-        self._execute(query)
+        self.execute(query)
 
     def insert(self, **values: str) -> None:
         """Insert new values into the table
@@ -86,7 +89,7 @@ class Model:
             {vals}
         )
         """
-        self._execute(query)
+        self.execute(query)
 
     def fetch_all(self) -> Any:
         """Fetch all the data from the table
@@ -95,7 +98,7 @@ class Model:
         :rtype: Any
         """
         query = f"SELECT * FROM {self.name}"
-        return self._execute(query, fetch=True)
+        return self.execute(query, fetch=True)
 
     def filter_row(self, data: Any, col: str | None = None) -> Any:
         """If `col` is provided, this function will filter out a certain
@@ -129,7 +132,7 @@ class Model:
         SELECT * FROM {self.name}
         WHERE id = (SELECT MAX(id)  FROM {self.name})
         """
-        data = self._execute(query, fetch=True)
+        data = self.execute(query, fetch=True)
         return self.filter_row(data, col)
 
     def edit(self, set: str, where: str) -> None:
@@ -147,4 +150,4 @@ class Model:
         WHERE
             {where}
         """
-        self._execute(query)
+        self.execute(query)
