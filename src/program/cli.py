@@ -12,11 +12,13 @@ type_commands = (
     "mypy generals/constants.py --strict",
     "mypy generals/settings.py --strict",
     "mypy bot/bot.py --strict",
+    "mypy models/model.py --strict"
 )
 
 unittest_commands = (
     "python3 -m unittest generals/test_actions.py",
     "python3 -m unittest bot/test_bot.py",
+    "python3 -m unittest models/test_models.py",
 )
 
 settings_manager = Settings(SETTINGS)

@@ -5,3 +5,5 @@ install.txt
 .testsettings.json
 .env
 error_logs.txt
+src/models/test
+src/test_db
