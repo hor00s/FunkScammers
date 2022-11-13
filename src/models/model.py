@@ -33,7 +33,7 @@ class Model:
         :param name: Name of the databse
         :type name: str
         """
-        self.name = name
+        self._name = name
         self.table = table
         self.table['id'] = 'INTEGER PRIMARY KEY'
 
@@ -43,6 +43,10 @@ class Model:
         self.table_vals = ' '.join(
             f"{n} {t}," for (n, t) in table.items()
         )[:-1]
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     def execute(self, query: str, fetch: bool = False) -> Any:
         """Execute a query
@@ -136,8 +140,14 @@ class Model:
         return self.filter_row(data, col)
 
     def edit(self, set: str, where: str) -> None:
-        """Edit a row based on a condition
-
+        """Edit a row based on a condition, the sql that is being create is:
+        ```
+            UPDATE {self.name}
+            SET
+                {set}
+            WHERE
+                {where}
+        ```
         :param set: Which column to set
         :type set: str
         :param where: Condition

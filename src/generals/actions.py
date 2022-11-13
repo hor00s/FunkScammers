@@ -44,6 +44,7 @@ def error_logger(path: Path) -> Callable[[Any], Any]:
                 return func(*args, **kwargs)
             except Exception as err:
                 print(err)
+                print(traceback.format_exc())
                 write_error(err, path)
                 return 1
         return wrapper

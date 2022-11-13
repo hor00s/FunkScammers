@@ -18,23 +18,6 @@ from dotenv import (
 load_dotenv(find_dotenv())
 
 
-def delete_bad_replies(redditor: praw.reddit.Redditor, max_downvotes: int):
-    """Check if a reply that the bot made has less that
-    `max_downvotes` and delete it
-
-    :param redditor: An instance of the account
-    :type redditor: praw.reddit.Redditor
-    :param max_downvotes: The ammount of downvotes enough\
-        to trigger a deletion
-    :type max_downvotes: int
-    """
-    comments = redditor.comments.new(limit=None)
-
-    for comment in comments:
-        if comment.score < max_downvotes:
-            comment.delete()
-
-
 @actions.error_logger(ERROR_LOGGER)
 def mainloop():
     """Mainloop of the program. This is where the actual
@@ -47,7 +30,7 @@ def mainloop():
 
     bot = Bot(
         username=os.environ['username'],
-        password=os.environ['password']
+        password=os.environ['password'],
     )
 
     reddit = praw.Reddit(
@@ -58,11 +41,13 @@ def mainloop():
         username=bot.name,
     )
 
+    bot.create_table()
     redditor = reddit.redditor(bot.name)
 
     running = True
     while running:
-        delete_bad_replies(redditor, int(settings.get('max_downvotes')))
+        print('mainloop started')
+        bot.delete_bad_replies(redditor, int(settings.get('max_downvotes')))
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
         for sub in followed_subs:

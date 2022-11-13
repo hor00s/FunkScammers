@@ -1,8 +1,39 @@
 import spacy
 from typing import Iterable
+from models import Model
+from praw.reddit import Redditor  # type: ignore
 
 
-class Bot:
+class BotModel(Model):
+    def __init__(self, name: str) -> None:
+        self.table = {
+            "author": 'TEXT',
+            "replied_to": 'TEXT',
+            "reply_id": 'TEXT',
+            "success_rate": 'INTEGER',
+            "fail_rate": 'INTEGER',
+        }
+        super().__init__(name, **self.table)
+
+    def comment_failed(self) -> None:
+        last_id = self.fetch_last('id')
+        last_success = self.fetch_last('success_rate') - 1
+        last_fail = self.fetch_last('fail_rate') + 1
+        self.edit(
+            set=f'fail_rate={last_fail}, success_rate={last_success}',
+            where=f'id={last_id}'
+        )
+
+    def comment_succeed(self) -> None:
+        last_id = self.fetch_last('id')
+        last_success = self.fetch_last('success_rate') + 1
+        self.edit(
+            set=f'success_rate={last_success}',
+            where=f'id={last_id}',
+        )
+
+
+class Bot(BotModel):
     def __init__(self, username: str, password: str) -> None:
         """A bot `instance` should always work alongside with
         a `Reddit` instance
@@ -12,7 +43,7 @@ class Bot:
         :param password: The account's password
         :type password: str
         """
-        self._name = username
+        super().__init__(username)
         self._passwd = password
         self._nlp = spacy.load('en_core_web_lg')
 
@@ -62,3 +93,26 @@ class Bot:
                 .similarity(self._nlp(text)) > top_match, samples
             ))
         ) >= total_matches
+
+    def delete_bad_replies(self, redditor: Redditor,
+                           max_downvotes: int) -> None:
+        """Check if a reply that the bot made has less that
+        `max_downvotes` and delete it
+
+        :param redditor: An instance of the account
+        :type redditor: praw.reddit.Redditor
+        :param max_downvotes: The ammount of downvotes enough\
+            to trigger a deletion
+        :type max_downvotes: int
+        """
+        comments = redditor.comments.new(limit=None)
+        self.comment_failed()
+        for comment in comments:
+            if comment.score < max_downvotes:
+                comment.delete()
+
+    def reply(self) -> str:
+        self.comment_succeed()
+        return """
+TODO: Implement a reply (Include stats etc..)
+        """
