@@ -106,9 +106,9 @@ class Bot(BotModel):
         :type max_downvotes: int
         """
         comments = redditor.comments.new(limit=None)
-        self.comment_failed()
         for comment in comments:
             if comment.score < max_downvotes:
+                self.comment_failed()
                 comment.delete()
 
     def reply(self) -> str:
