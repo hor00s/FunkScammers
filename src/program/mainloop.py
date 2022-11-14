@@ -58,24 +58,30 @@ def mainloop():
 
             for post in reddit.subreddit(sub_name).new(limit=None):
                 if bot.is_sus(af(post.selftext), samples, sta, tm):
-                    if post.author != bot.name:
+                    if post.author != bot.name and\
+                            not bot.already_replied(post.id):
                         post.reply(bot.reply('post', post.author, post.id))
                         print("We've a sus post")
+                        exit()  # TODO: Remove
 
                 for comment in post.comments:
                     if isinstance(comment, MoreComments):
                         continue
                     if bot.is_sus(af(comment.body), samples, sta, tm):
-                        if comment.author != bot.name:
+                        if comment.author != bot.name and\
+                                not bot.already_replied(comment.id):
                             print("We've a sus top level comment")
                             comment.reply(bot.reply('comment', comment.author,
                                                     comment.id))
+                            exit()  # TODO: Remove
 
                     for reply in comment.replies:
                         if isinstance(reply, MoreComments):
                             continue
                         if bot.is_sus(af(reply.body), samples, sta, tm):
-                            if reply.author != bot.name:
+                            if reply.author != bot.name and\
+                                    not bot.already_replied(comment.id):
                                 print("We've a sus reply")
                                 reply.reply(bot.reply('comment', reply.author,
                                                       comment.id))
+                                exit()  # TODO: Remove

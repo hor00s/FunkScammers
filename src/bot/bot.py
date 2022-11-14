@@ -1,10 +1,9 @@
 import spacy
 from models import Model
 from typing import Iterable
-from pathlib import Path
 from praw.reddit import Redditor  # type: ignore
 from generals import (
-    find_next_sample,
+    # find_next_sample,
     total_samples,
     SCAM_SAMPLES,
 )
@@ -15,9 +14,11 @@ class BotModel(Model):
         self.table = {
             "author": 'TEXT',
             "reply_id": 'TEXT',
+            # TODO: Add reply text
             "bot_reply_id": "TEXT",
             "success_rate": 'INTEGER',
             "fail_rate": 'INTEGER',
+            # TODO: Add sub's name
         }
         super().__init__(name, **self.table)
 
@@ -33,7 +34,7 @@ class BotModel(Model):
         except IndexError:
             print('No comments have been inserted yet')
 
-    def insert_relpy(self, auth: str, rep_id: str) -> None:
+    def insert_reply(self, auth: str, rep_id: str) -> None:
 
         if not len(self.fetch_all()):
             self.insert(author=auth, reply_id=rep_id,
@@ -72,6 +73,9 @@ class Bot(BotModel):
     @property
     def password(self) -> str:
         return self._passwd
+
+    def already_replied(self, comment_id: str) -> bool:
+        return any(i for i in self.fetch_all() if comment_id in i)
 
     def is_sus(self, text: str, samples: Iterable[str],
                top_match: float, total_matches: int) -> bool:
@@ -123,8 +127,13 @@ class Bot(BotModel):
                 self.comment_failed()
                 comment.delete()
             elif comment.score > max_upvotes:
-                path = Path(f"{SCAM_SAMPLES}/{find_next_sample(SCAM_SAMPLES)}") # noqa
-                # TODO: Save the text in the scam samples
+                # TODO:
+                # Here, I wan't to autosave someone's reply
+                # after *x* ammount of upvotes, but..
+                # 1 issue is that his comment might have
+                # been deleted and the other is that I need
+                # a way to actually locate the text
+                pass
 
     def reply(self, type_: str, user: Redditor, reply_id: str) -> str:
         """Returns the proper reply for sus posts/replies
@@ -138,13 +147,12 @@ class Bot(BotModel):
         """
         types = ['comment', 'post']
         assert type_.lower() in types,\
-            f"I got an invalid type_ `{type_}` expected `{', '.join(types)}`"
+            f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
 
-        self.insert_relpy(user.name, reply_id)
+        self.insert_reply(user.name, reply_id)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
         samples = total_samples(SCAM_SAMPLES)
-
         return f"""
 # This a test. If you see this message before I delete it, do not worry!
 
