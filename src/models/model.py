@@ -76,7 +76,7 @@ class Model:
         """
         self.execute(query)
 
-    def insert(self, **values: str) -> None:
+    def insert(self, **values: str | int) -> None:
         """Insert new values into the table
         (can accept arbitary number of values
         for a new inserion and leave the rest
@@ -93,7 +93,6 @@ class Model:
             {vals}
         )
         """
-        print(query)
         self.execute(query)
 
     def fetch_all(self) -> Any:
