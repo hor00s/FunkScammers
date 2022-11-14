@@ -106,7 +106,7 @@ class Model:
 
     def filter_row(self, data: Any, col: str | None = None) -> Any:
         """If `col` is provided, this function will filter out a certain
-        colummn out of a row
+        column out of a row
         ```
             data = [(name, age, id)]
             self._filter_last('name') -> name

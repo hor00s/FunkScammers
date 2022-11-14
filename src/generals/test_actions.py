@@ -40,8 +40,6 @@ class TestActions(unittest.TestCase):
         self.assertEqual(data, expected)
 
     def test_find_next_sample(self):
-        # TODO: Find an automatic way to test this. In it's current stage
-        # we've to manually change the expected result
         next = total_samples(SCAM_SAMPLES) + 1
         file = f"{next}.txt"
         self.assertEqual(find_next_sample(self.scam_samples), file)

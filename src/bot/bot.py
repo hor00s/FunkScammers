@@ -14,11 +14,9 @@ class BotModel(Model):
         self.table = {
             "author": 'TEXT',
             "reply_id": 'TEXT',
-            # TODO: Add reply text
-            "bot_reply_id": "TEXT",
             "success_rate": 'INTEGER',
             "fail_rate": 'INTEGER',
-            # TODO: Add sub's name
+            "subs_name": "TEXT",
         }
         super().__init__(name, **self.table)
 
@@ -34,16 +32,17 @@ class BotModel(Model):
         except IndexError:
             print('No comments have been inserted yet')
 
-    def insert_reply(self, auth: str, rep_id: str) -> None:
+    def insert_reply(self, auth: str, rep_id: str, subs_name: str) -> None:
 
         if not len(self.fetch_all()):
             self.insert(author=auth, reply_id=rep_id,
-                        success_rate=1, fail_rate=0)
+                        success_rate=1, fail_rate=0, subs_name=subs_name)
         else:
             s_rate = self.fetch_last('success_rate') + 1
             f_rate = self.fetch_last('fail_rate')
             self.insert(author=auth, reply_id=rep_id,
-                        success_rate=s_rate, fail_rate=f_rate)
+                        success_rate=s_rate, fail_rate=f_rate,
+                        subs_name=subs_name)
 
 
 class Bot(BotModel):
@@ -126,16 +125,13 @@ class Bot(BotModel):
             if comment.score < max_downvotes:
                 self.comment_failed()
                 comment.delete()
+                exit()  # TODO: Remove
             elif comment.score > max_upvotes:
-                # TODO:
-                # Here, I wan't to autosave someone's reply
-                # after *x* ammount of upvotes, but..
-                # 1 issue is that his comment might have
-                # been deleted and the other is that I need
-                # a way to actually locate the text
+                # TODO: Save text
                 pass
 
-    def reply(self, type_: str, user: Redditor, reply_id: str) -> str:
+    def reply(self, type_: str, user: Redditor,
+              reply_id: str, sub_name: str) -> str:
         """Returns the proper reply for sus posts/replies
 
         :param type_: The type of text the bot replies to (post/comment)
@@ -148,8 +144,8 @@ class Bot(BotModel):
         types = ['comment', 'post']
         assert type_.lower() in types,\
             f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
-
-        self.insert_reply(user.name, reply_id)
+        print(sub_name)
+        self.insert_reply(user.name, reply_id, sub_name)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
         samples = total_samples(SCAM_SAMPLES)

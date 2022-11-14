@@ -60,7 +60,9 @@ def mainloop():
                 if bot.is_sus(af(post.selftext), samples, sta, tm):
                     if post.author != bot.name and\
                             not bot.already_replied(post.id):
-                        post.reply(bot.reply('post', post.author, post.id))
+                        post.reply(bot.reply('post', post.author,
+                                             post.id, sub_name))
+
                         print("We've a sus post")
                         exit()  # TODO: Remove
 
@@ -72,7 +74,9 @@ def mainloop():
                                 not bot.already_replied(comment.id):
                             print("We've a sus top level comment")
                             comment.reply(bot.reply('comment', comment.author,
-                                                    comment.id))
+                                                    comment.id,
+                                                    sub_name))
+
                             exit()  # TODO: Remove
 
                     for reply in comment.replies:
@@ -82,6 +86,9 @@ def mainloop():
                             if reply.author != bot.name and\
                                     not bot.already_replied(comment.id):
                                 print("We've a sus reply")
-                                reply.reply(bot.reply('comment', reply.author,
-                                                      comment.id))
+                                reply.reply(bot.reply('comment',
+                                            reply.author,
+                                            comment.id,
+                                            sub_name))
+
                                 exit()  # TODO: Remove
