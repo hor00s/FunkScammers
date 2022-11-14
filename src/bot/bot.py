@@ -158,6 +158,8 @@ this {type_} is highly sus and probably a scam. If you think this is right,
 please consider reporting u/{user.name}. If you disagree, downvote my reply
 and this comment will delete it self automatically!
 
+Note that I'm still under development!
+
 ^(My current rating is: {self.get_success_percentage(f_rate, s_rate)})
 
 ^(I'm a bot and this action was performed automatically. Check out\
