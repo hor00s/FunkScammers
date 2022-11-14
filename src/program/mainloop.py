@@ -62,9 +62,7 @@ def mainloop():
                             not bot.already_replied(post.id):
                         post.reply(bot.reply('post', post.author,
                                              post.id, sub_name))
-
                         print("We've a sus post")
-                        exit()  # TODO: Remove
 
                 for comment in post.comments:
                     if isinstance(comment, MoreComments):
@@ -77,8 +75,6 @@ def mainloop():
                                                     comment.id,
                                                     sub_name))
 
-                            exit()  # TODO: Remove
-
                     for reply in comment.replies:
                         if isinstance(reply, MoreComments):
                             continue
@@ -90,5 +86,3 @@ def mainloop():
                                             reply.author,
                                             comment.id,
                                             sub_name))
-
-                                exit()  # TODO: Remove

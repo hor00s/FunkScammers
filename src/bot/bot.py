@@ -125,10 +125,13 @@ class Bot(BotModel):
             if comment.score < max_downvotes:
                 self.comment_failed()
                 comment.delete()
-                exit()  # TODO: Remove
             elif comment.score > max_upvotes:
                 # TODO: Save text
                 pass
+
+    def get_success_percentage(self, failed: int, succesed: int) -> float:
+        rate = (failed / succesed) * 100
+        return float(f"{rate:.2f}")
 
     def reply(self, type_: str, user: Redditor,
               reply_id: str, sub_name: str) -> str:
@@ -150,14 +153,12 @@ class Bot(BotModel):
         f_rate = self.fetch_last('fail_rate')
         samples = total_samples(SCAM_SAMPLES)
         return f"""
-# This a test. If you see this message before I delete it, do not worry!
-
 Based on {samples} samples I've gathered so far,
 this {type_} is highly sus and probably a scam. If you think this is right,
 please consider reporting u/{user.name}. If you disagree, downvote my reply
-and this comment will delete it self!
+and this comment will delete it self automatically!
 
-^(My stats are: Success rate: {s_rate} | fail rate: {f_rate})
+^(My current rating is: {self.get_success_percentage(f_rate, s_rate)})
 
 ^(I'm a bot and this action was performed automatically. Check out\
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
