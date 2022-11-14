@@ -121,6 +121,7 @@ class Bot(BotModel):
         :type max_downvotes: int
         """
         comments = redditor.comments.new(limit=None)
+        print("Checking my old comments")
         for comment in comments:
             if comment.score < max_downvotes:
                 self.comment_failed()
@@ -147,7 +148,7 @@ class Bot(BotModel):
         types = ['comment', 'post']
         assert type_.lower() in types,\
             f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
-        print(sub_name)
+
         self.insert_reply(user.name, reply_id, sub_name)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
@@ -160,9 +161,10 @@ and this comment will delete it self automatically!
 
 Note that I'm still under development!
 
-^(My current rating is: {self.get_success_percentage(f_rate, s_rate)})
+^(My current rating is: {self.get_success_percentage(f_rate, s_rate)})%
 
 ^(I'm a bot and this action was performed automatically. Check out\
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
  to make any suggestions to make me better!)
         """
+# TODO: Remove the `under development` line
