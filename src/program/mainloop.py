@@ -47,7 +47,9 @@ def mainloop():
     running = True
     while running:
         print('mainloop started')
-        bot.delete_bad_replies(redditor, int(settings.get('max_downvotes')))
+        bot.check_comments(redditor, int(settings.get('max_downvotes')),
+                           int(settings.get('top_upvotes')))
+
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
 

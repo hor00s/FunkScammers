@@ -1,8 +1,10 @@
 import spacy
 from models import Model
 from typing import Iterable
+from pathlib import Path
 from praw.reddit import Redditor  # type: ignore
 from generals import (
+    find_next_sample,
     total_samples,
     SCAM_SAMPLES,
 )
@@ -13,6 +15,7 @@ class BotModel(Model):
         self.table = {
             "author": 'TEXT',
             "reply_id": 'TEXT',
+            "bot_reply_id": "TEXT",
             "success_rate": 'INTEGER',
             "fail_rate": 'INTEGER',
         }
@@ -103,8 +106,8 @@ class Bot(BotModel):
             ))
         ) >= total_matches
 
-    def delete_bad_replies(self, redditor: Redditor,
-                           max_downvotes: int) -> None:
+    def check_comments(self, redditor: Redditor,
+                       max_downvotes: int, max_upvotes: int) -> None:
         """Check if a reply that the bot made has less that
         `max_downvotes` and delete it
 
@@ -119,6 +122,9 @@ class Bot(BotModel):
             if comment.score < max_downvotes:
                 self.comment_failed()
                 comment.delete()
+            elif comment.score > max_upvotes:
+                path = Path(f"{SCAM_SAMPLES}/{find_next_sample(SCAM_SAMPLES)}") # noqa
+                # TODO: Save the text in the scam samples
 
     def reply(self, type_: str, user: Redditor, reply_id: str) -> str:
         """Returns the proper reply for sus posts/replies
