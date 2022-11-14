@@ -1,9 +1,11 @@
 import json
 import unittest
 from .settings import Settings
+from .constants import SCAM_SAMPLES
 from .actions import (
     ascii_filter,
-    find_next_sample
+    find_next_sample,
+    total_samples,
 )
 
 
@@ -40,7 +42,9 @@ class TestActions(unittest.TestCase):
     def test_find_next_sample(self):
         # TODO: Find an automatic way to test this. In it's current stage
         # we've to manually change the expected result
-        self.assertEqual(find_next_sample(self.scam_samples), '6.txt')
+        next = total_samples(SCAM_SAMPLES) + 1
+        file = f"{next}.txt"
+        self.assertEqual(find_next_sample(self.scam_samples), file)
 
 
 class TestSettings(unittest.TestCase):

@@ -20,7 +20,7 @@ More documentation will be added later!
 
 #### ~ Where this bot operates?
 
-The bot operates on the subs it folllows
+The bot operates on the subs it folllows. It mainly targets *learning x* subs where I think people are more *vulnerable* because it can step upon people's frustration and willing to learn.
 
 #### ~ What the bot tries to detect?
 
@@ -30,17 +30,13 @@ The bot, with the help of [en_core_web_lg model](https://www.datasciencelearner.
 
 The bot mostly follows *learning related* subreddits where I, as the author, personally think that enthusiastic people that want to learn something, may fall to a trap on some *great offer* / *fast learning opportunity* that seems to good to be true 
 
-
-
-
 ## Features
 
 - Reply to sus posts
 - Reply to sus comments 
-- Reply to sus reply recursively on comments
+- Reply to sus comments recursively
 - Delete it's own comments that have *x* number of downvotes
 - And hopefully, more soon...
-
 
 ## Installation
 
@@ -61,36 +57,35 @@ Spacy model: python -m spacy download en_core_web_lg
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`client_id`
-
-`secret`
-
-`Account's username`
-
-`user_agent`
-
-`Account's password`
-
+- Reddit's client id (`client_id`)
+- Reddit's secret key  (`secret`)
+- Account's username (`username`)
+- Reddit's provided user agent (`user_agent`)
+- Account's password (`password`)
 
 ## Contributing
 
 Contributions are always welcome!
 
+**Always in need of more samples (See `samples` directory)**
+
 - Python version used: 3.10.x
 - Pip version used: 22.3.x
 
 Anyone may Contribute to this app by the standard *fork -> clone -> edit -> Pull request*.
+
 See Github's very cool project [good-first-contribution](https://github.com/firstcontributions/first-contributions) if you need any help for the steps you have to take!
+
 You may name the branch with the following format: `<your_name>_<commit_type>`
 
-Make sure to run all the tests (See next section) before and after your contribution and update documentation if necessary.
-It's also worth mentioning that the program follows the `sphinx-notype` docstring format for all the functions.
+Make sure to run all the tests (See next section) before and after your changes and update documentation if necessary.
+It's also worth mentioning that the program follows the `sphinx` docstring format.
 
-Finally, contributors may add their name with a hyperlink to their profile at the **Contributors** section!
+Finally, contributors may add their name with a hyperlink to their profile at the **Contributors** section at  the bottom of this file!
 
 ### Ideas for contribution
 - Provide some scam posts/comments to train the model
-- Find/Make a cool logo and include it at the top 
+- Find/Make a cool logo and put it at the top of this file
 - Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
 - Write better docstrings throughout the program
 - Make the documentation better
@@ -98,11 +93,11 @@ Finally, contributors may add their name with a hyperlink to their profile at th
 
 ## Running Tests
 
-This project is currently tested with `unittests` and it follows `mypy`'s `--strict` rules. You can take the following shortcut for type and unittesting:
+This project is currently tested with `unittest` and it follows `mypy`'s `--strict` rules. You can take the following shortcut for type and unittesting:
 
 ```bash
   ./funkscammers unit      # Run all the unittests for every module
-  ./funkscammers type      # To run all type cheking
+  ./funkscammers type      # To run all type cheking for every module
   ./funkscammers allchecks # To run both unittests and typechecks
 ```
 
