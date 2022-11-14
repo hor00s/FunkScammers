@@ -11,6 +11,7 @@ from typing import (
 __all__ = [
     'error_logger',
     'read_file',
+    'total_samples',
     'ascii_filter',
     'load_samples',
     'find_next_sample',
@@ -62,6 +63,10 @@ def read_file(path: Path) -> str:
     """
     with open(path, mode='r') as f:
         return f.read()
+
+
+def total_samples(samples_dir: Path) -> int:
+    return len(os.listdir(samples_dir))
 
 
 def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:

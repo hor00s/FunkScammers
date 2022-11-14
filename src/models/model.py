@@ -93,6 +93,7 @@ class Model:
             {vals}
         )
         """
+        print(query)
         self.execute(query)
 
     def fetch_all(self) -> Any:

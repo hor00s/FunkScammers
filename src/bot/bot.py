@@ -1,14 +1,17 @@
 import spacy
-from typing import Iterable
 from models import Model
+from typing import Iterable
 from praw.reddit import Redditor  # type: ignore
+from generals import (
+    total_samples,
+    SCAM_SAMPLES,
+)
 
 
 class BotModel(Model):
     def __init__(self, name: str) -> None:
         self.table = {
             "author": 'TEXT',
-            "replied_to": 'TEXT',
             "reply_id": 'TEXT',
             "success_rate": 'INTEGER',
             "fail_rate": 'INTEGER',
@@ -16,21 +19,27 @@ class BotModel(Model):
         super().__init__(name, **self.table)
 
     def comment_failed(self) -> None:
-        last_id = self.fetch_last('id')
-        last_success = self.fetch_last('success_rate') - 1
-        last_fail = self.fetch_last('fail_rate') + 1
-        self.edit(
-            set=f'fail_rate={last_fail}, success_rate={last_success}',
-            where=f'id={last_id}'
-        )
+        try:
+            last_id = self.fetch_last('id')
+            last_success = self.fetch_last('success_rate') - 1
+            last_fail = self.fetch_last('fail_rate') + 1
+            self.edit(
+                set=f'fail_rate={last_fail}, success_rate={last_success}',
+                where=f'id={last_id}'
+            )
+        except IndexError:
+            print('No comments have been inserted yet')
 
-    def comment_succeed(self) -> None:
-        last_id = self.fetch_last('id')
-        last_success = self.fetch_last('success_rate') + 1
-        self.edit(
-            set=f'success_rate={last_success}',
-            where=f'id={last_id}',
-        )
+    def insert_relpy(self, auth: str, rep_id: str) -> None:
+
+        if not len(self.fetch_all()):
+            self.insert(author=auth, reply_id=rep_id,
+                        success_rate=1, fail_rate=0)
+        else:
+            s_rate = self.fetch_last('success_rate') + 1
+            f_rate = self.fetch_last('fail_rate')
+            self.insert(author=auth, reply_id=rep_id,
+                        success_rate=s_rate, fail_rate=f_rate)
 
 
 class Bot(BotModel):
@@ -111,8 +120,36 @@ class Bot(BotModel):
                 self.comment_failed()
                 comment.delete()
 
-    def reply(self) -> str:
-        self.comment_succeed()
-        return """
-TODO: Implement a reply (Include stats etc..)
+    def reply(self, type_: str, user: Redditor, reply_id: str) -> str:
+        """Returns the proper reply for sus posts/replies
+
+        :param type_: The type of text the bot replies to (post/comment)
+        :type type_: str
+        :return: The formatted reply that will be posted on Reddit
+        :rtype: str
+        :Raises AsserionError: As a safety mechanism in case `type_`
+            argument is invalid
+        """
+        types = ['comment', 'post']
+        assert type_.lower() in types,\
+            f"I got an invalid type_ `{type_}` expected `{', '.join(types)}`"
+
+        self.insert_relpy(user.name, reply_id)
+        s_rate = self.fetch_last('success_rate')
+        f_rate = self.fetch_last('fail_rate')
+        samples = total_samples(SCAM_SAMPLES)
+
+        return f"""
+# This a test. If you see this message before I delete it, do not worry!
+
+Based on {samples} samples I've gathered so far,
+this {type_} is highly sus and probably a scam. If you think this is right,
+please consider reporting u/{user.name}. If you disagree, downvote my reply
+and this comment will delete it self!
+
+^(My stats are: Success rate: {s_rate} | fail rate: {f_rate})
+
+^(I'm a bot and this action was performed automatically. Check out\
+ my [source code](https://github.com/hor00s/FunkScammers) and feel free\
+ to make any suggestions to make me better!)
         """

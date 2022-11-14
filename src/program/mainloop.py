@@ -50,23 +50,30 @@ def mainloop():
         bot.delete_bad_replies(redditor, int(settings.get('max_downvotes')))
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
+
         for sub in followed_subs:
             sub_name = str(sub)
+
             for post in reddit.subreddit(sub_name).new(limit=None):
                 if bot.is_sus(af(post.selftext), samples, sta, tm):
-                    print("We've a sus post")
-                    print(post.selftext)
+                    if post.author != bot.name:
+                        post.reply(bot.reply('post', post.author, post.id))
+                        print("We've a sus post")
 
                 for comment in post.comments:
                     if isinstance(comment, MoreComments):
                         continue
                     if bot.is_sus(af(comment.body), samples, sta, tm):
-                        print("We've a sus top level comment")
-                        print(comment.body)
+                        if comment.author != bot.name:
+                            print("We've a sus top level comment")
+                            comment.reply(bot.reply('comment', comment.author,
+                                                    comment.id))
 
-                        for reply in comment.replies:
-                            if isinstance(reply, MoreComments):
-                                continue
-                            if bot.is_sus(af(reply.body), samples, sta, tm):
+                    for reply in comment.replies:
+                        if isinstance(reply, MoreComments):
+                            continue
+                        if bot.is_sus(af(reply.body), samples, sta, tm):
+                            if reply.author != bot.name:
                                 print("We've a sus reply")
-                                print(reply.body)
+                                reply.reply(bot.reply('comment', reply.author,
+                                                      comment.id))
