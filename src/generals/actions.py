@@ -1,4 +1,5 @@
 import os
+import sys
 import traceback
 from pathlib import Path
 from typing import (
@@ -15,6 +16,7 @@ __all__ = [
     'ascii_filter',
     'load_samples',
     'find_next_sample',
+    'is_imported',
 ]
 
 
@@ -43,6 +45,10 @@ def error_logger(path: Path) -> Callable[[Any], Any]:
         def wrapper(*args: Any, **kwargs: Any) -> Callable[[Any], Any] | int:
             try:
                 return func(*args, **kwargs)
+            except ModuleNotFoundError as err:
+                print(err)
+                print(traceback.format_exc())
+                return 1
             except Exception as err:
                 print(err)
                 print(traceback.format_exc())
@@ -127,3 +133,7 @@ def find_next_sample(samples_dir: Path) -> str:
     find_next_num = max(int(i[:i.index('.')]) for i in current_samples) + 1
     next_file = f"{find_next_num}.txt"
     return next_file
+
+
+def is_imported(module: Any | object):
+    return module in sys.modules

@@ -1,12 +1,24 @@
-import spacy
 from models import Model
 from typing import Iterable
 from praw.reddit import Redditor  # type: ignore
 from generals import (
     # find_next_sample,
+    Settings,
     total_samples,
+    is_imported,
     SCAM_SAMPLES,
+    SETTINGS,
 )
+
+settings = Settings(SETTINGS)
+
+try:
+    import spacy
+except ModuleNotFoundError:
+    from difflib import SequenceMatcher
+    settings.set("sus_text_above", "0.3")
+else:
+    settings.set("sus_text_above", "0.92")
 
 
 class BotModel(Model):
@@ -78,10 +90,16 @@ class Bot(BotModel):
 
     def is_sus(self, text: str, samples: Iterable[str],
                top_match: float, total_matches: int) -> bool:
-        """Based on `en_core_web_lg` AI language proccessing model
+        """Top part: Based on `en_core_web_lg` AI language proccessing model
         (more info in `references.txt`) of `spacy` library, this function
         checks whether the `text` provided matches with (more or equal)
         ammount of samples above the match rate (`top_match`)
+
+        Bottom part: Works about the same way but it uses a class from
+        a very lightweight built-in library (`SequenceMatcher`) to achive
+        the same thing. Mostly for testing purposes (for now) and in an
+        effort to free the program from the huge dependency of `spacy`
+        and `en_core_web_lg`
 
         (This may change in the future based on the success rate of the
         bot to match **at least two** above the limit)
@@ -102,12 +120,20 @@ class Bot(BotModel):
             *x* with any of the samples
         :rtype: bool
         """
-        return len(
-            tuple(filter(
-                lambda sentence: self._nlp(sentence)
-                .similarity(self._nlp(text)) > top_match, samples
-            ))
-        ) >= total_matches
+        if is_imported('spacy'):
+            return len(
+                tuple(filter(
+                    lambda sentence: self._nlp(sentence)
+                    .similarity(self._nlp(text)) > top_match, samples
+                ))
+            ) >= total_matches
+        else:
+            return len(
+                tuple(filter(
+                    lambda sentence: SequenceMatcher(None, sentence, text)
+                    .ratio() > top_match, samples
+                ))
+            )
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:
