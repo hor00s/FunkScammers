@@ -69,7 +69,6 @@ class Bot(BotModel):
         """
         super().__init__(username)
         self._passwd = password
-        self._nlp = spacy.load('en_core_web_lg')
 
     def __str__(self) -> str:
         return str(self._name)
@@ -121,10 +120,11 @@ class Bot(BotModel):
         :rtype: bool
         """
         if is_imported('spacy'):
+            nlp = spacy.load('en_core_web_lg')  # noqa
             return len(
                 tuple(filter(
-                    lambda sentence: self._nlp(sentence)
-                    .similarity(self._nlp(text)) > top_match, samples
+                    lambda sentence: nlp(sentence)
+                    .similarity(nlp(text)) > top_match, samples
                 ))
             ) >= total_matches
         else:
@@ -133,7 +133,7 @@ class Bot(BotModel):
                     lambda sentence: SequenceMatcher(None, sentence, text)
                     .ratio() > top_match, samples
                 ))
-            )
+            ) >= total_matches
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:

@@ -135,5 +135,5 @@ def find_next_sample(samples_dir: Path) -> str:
     return next_file
 
 
-def is_imported(module: Any | object):
+def is_imported(module: Any | object) -> bool:
     return module in sys.modules
