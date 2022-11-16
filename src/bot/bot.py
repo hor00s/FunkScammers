@@ -17,8 +17,10 @@ try:
 except ModuleNotFoundError:
     from difflib import SequenceMatcher
     settings.set("sus_text_above", "0.3")
+    print("Running with `SequenceMatcher`")
 else:
     settings.set("sus_text_above", "0.92")
+    print("Running with `spacy`")
 
 
 class BotModel(Model):

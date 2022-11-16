@@ -48,6 +48,7 @@ def mainloop():
     while running:
         bot.check_comments(redditor, int(settings.get('max_downvotes')),
                            int(settings.get('top_upvotes')))
+        search_limit = int(settings.get('max_posts_lookup'))
 
         samples = tuple(actions.load_samples(SCAM_SAMPLES))
         followed_subs = reddit.user.subreddits(limit=None)
@@ -55,9 +56,9 @@ def mainloop():
         for sub in followed_subs:
             sub_name = str(sub)
             print('iterating sub:', sub_name)
-
-            for post in reddit.subreddit(sub_name)\
-                    .new(limit=int(settings.get('max_posts_lookup'))):
+            new = reddit.subreddit(sub_name).new(limit=search_limit)
+            hot = reddit.subreddit(sub_name).hot(limit=search_limit)
+            for post in new + hot:
                 if bot.is_sus(af(post.selftext), samples, sta, tm):
                     if post.author != bot.name and\
                             not bot.already_replied(post.id):

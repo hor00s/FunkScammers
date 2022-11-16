@@ -53,6 +53,18 @@ Spacy model: python -m spacy download en_core_web_lg
 ✔ Download and installation successful (If you get this msg)
 ```
 
+### Minimal installation
+
+In-case of minimal installation the bot will exclude spacy and will
+automatically run with built-in `SequenceMatcher` class
+
+```
+pip install python-dotenv==0.21.0
+pip install praw==7.6.1
+# Optionally
+pip install mypy
+```
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
