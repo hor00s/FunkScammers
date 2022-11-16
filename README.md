@@ -59,8 +59,7 @@ In-case of minimal installation the bot will exclude spacy and will
 automatically run with built-in `SequenceMatcher` class
 
 ```
-pip install python-dotenv==0.21.0
-pip install praw==7.6.1
+pip install minimal-requirements.txt
 # Optionally
 pip install mypy
 ```

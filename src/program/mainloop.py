@@ -58,7 +58,7 @@ def mainloop():
             print('iterating sub:', sub_name)
             new = reddit.subreddit(sub_name).new(limit=search_limit)
             hot = reddit.subreddit(sub_name).hot(limit=search_limit)
-            for post in new + hot:
+            for post in list(new) + list(hot):
                 if bot.is_sus(af(post.selftext), samples, sta, tm):
                     if post.author != bot.name and\
                             not bot.already_replied(post.id):
