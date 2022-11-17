@@ -9,5 +9,5 @@ __all__ = [
 
 
 SETTINGS:     Path = Path('../settings.json')
-SCAM_SAMPLES: Path = Path('../samples')
+SCAM_SAMPLES: Path = Path('../samples.csv')
 ERROR_LOGGER: Path = Path('../error_logs.txt')

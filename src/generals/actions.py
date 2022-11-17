@@ -1,4 +1,5 @@
 import os
+import csv
 import sys
 import traceback
 from pathlib import Path
@@ -15,8 +16,8 @@ __all__ = [
     'total_samples',
     'ascii_filter',
     'load_samples',
-    'find_next_sample',
     'is_imported',
+    'append_sample',
 ]
 
 
@@ -71,8 +72,9 @@ def read_file(path: Path) -> str:
         return f.read()
 
 
-def total_samples(samples_dir: Path) -> int:
-    return len(os.listdir(samples_dir))
+def total_samples(path: Path) -> int:
+    with open(path, mode='r') as f:
+        return len(f.readlines())
 
 
 def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
@@ -99,7 +101,7 @@ def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
     )
 
 
-def load_samples(directory: Path) -> Generator[str, None, None]:
+def load_samples(path: Path) -> Generator[str, None, None]:
     """Load all .txt (or similar) samples from a directory
     with plain `.read()`
 
@@ -108,32 +110,16 @@ def load_samples(directory: Path) -> Generator[str, None, None]:
     :yield: Each iteration yields the whole conent of one file
     :rtype: Generator[str, None, None]
     """
-    return (
-        ascii_filter(
-            read_file(
-                (Path(f"{directory}/{file}"))
-            ), min_range=0, max_range=127
-        )
-        for file in os.listdir(directory)
-    )
-
-
-def find_next_sample(samples_dir: Path) -> str:
-    """Since `scam_samples` directory contains files in row,
-    (1.txt, 2.txt ..) this function will find the last .txt
-    and return it's number plus 1. In this case it would return
-    `3.txt`
-
-    :param samples_dir: The directory where the samples are located
-    :type samples_dir: Path
-    :return: The next number in increasing order
-    :rtype: str
-    """
-    current_samples = os.listdir(samples_dir)
-    find_next_num = max(int(i[:i.index('.')]) for i in current_samples) + 1
-    next_file = f"{find_next_num}.txt"
-    return next_file
+    with open(path, mode='r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            yield ascii_filter(row[0])
 
 
 def is_imported(module: Any | object) -> bool:
     return module in sys.modules
+
+
+def append_sample(path: Path, text: str) -> None:
+    with open(path, mode='a') as f:
+        f.write('\n' + text)
