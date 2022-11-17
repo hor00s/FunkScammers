@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 from generals import (
     Settings,
     SETTINGS,
@@ -60,9 +59,6 @@ def cli(*args, **kwargs):
         if len(args) > 3:
             raise ValueError('`samples` command takes the\
 text in double quotes (`"text that you want to write"`)')
-
-        next_file = actions.find_next_sample(SCAM_SAMPLES)
-        with open(Path(f"{SCAM_SAMPLES}/{next_file}"), mode='w') as f:
-            f.write(args[2])
+        actions.append_sample(SCAM_SAMPLES, args[2])
 
     return 0

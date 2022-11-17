@@ -2,7 +2,6 @@ from models import Model
 from typing import Iterable
 from praw.reddit import Redditor  # type: ignore
 from generals import (
-    # find_next_sample,
     Settings,
     total_samples,
     is_imported,
