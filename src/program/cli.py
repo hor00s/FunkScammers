@@ -3,6 +3,7 @@ from generals import (
     Settings,
     SETTINGS,
     SCAM_SAMPLES,
+    ERROR_LOGGER,
     actions
 )
 
@@ -60,3 +61,8 @@ def cli(*args, **kwargs):
             raise ValueError('`samples` command takes the\
 text in double quotes (`"text that you want to write"`)')
         actions.append_sample(SCAM_SAMPLES, args[2])
+
+    elif args[1] == 'lasterror':
+        # TODO: Show last error from logs
+        ERROR_LOGGER
+        pass

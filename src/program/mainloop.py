@@ -7,7 +7,6 @@ from generals import (
     actions,
     SCAM_SAMPLES,
     SETTINGS,
-    ERROR_LOGGER,
     ascii_filter as af,
 )
 from dotenv import (
@@ -18,7 +17,6 @@ from dotenv import (
 load_dotenv(find_dotenv())
 
 
-@actions.error_logger(ERROR_LOGGER)
 def mainloop():
     """Mainloop of the program. This is where the actual
     bot operates.

@@ -73,8 +73,17 @@ def read_file(path: Path) -> str:
 
 
 def total_samples(path: Path) -> int:
-    with open(path, mode='r') as f:
-        return len(f.readlines())
+    """Count the number of samples saved
+    based on lines
+
+    :param path: The path of the csv
+    :type path: Path
+    :return: The ammount of line
+    :rtype: int
+    """
+    return len(
+        read_file(path).splitlines()
+    )
 
 
 def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
@@ -102,11 +111,10 @@ def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
 
 
 def load_samples(path: Path) -> Generator[str, None, None]:
-    """Load all .txt (or similar) samples from a directory
-    with plain `.read()`
+    """Load all lines of a csv file
 
-    :param directory: The directory where the samples are located
-    :type directory: Path
+    :param path: The directory where the samples are located
+    :type path: Path
     :yield: Each iteration yields the whole conent of one file
     :rtype: Generator[str, None, None]
     """
@@ -117,9 +125,23 @@ def load_samples(path: Path) -> Generator[str, None, None]:
 
 
 def is_imported(module: Any | object) -> bool:
+    """Returns whether a module is imported or not
+
+    :param module: Name of the module (ex `spacy`)
+    :type module: Any | object
+    :return:
+    :rtype: bool
+    """
     return module in sys.modules
 
 
 def append_sample(path: Path, text: str) -> None:
+    """Add a sample in the csv file
+
+    :param path: The path of the file
+    :type path: Path
+    :param text: The text to be appended
+    :type text: str
+    """
     with open(path, mode='a') as f:
         f.write('\n' + text)
