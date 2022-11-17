@@ -60,5 +60,3 @@ def cli(*args, **kwargs):
             raise ValueError('`samples` command takes the\
 text in double quotes (`"text that you want to write"`)')
         actions.append_sample(SCAM_SAMPLES, args[2])
-
-    return 0
