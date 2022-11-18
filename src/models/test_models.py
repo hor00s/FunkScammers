@@ -9,6 +9,7 @@ class TestModel(unittest.TestCase):
         self.table = {
             'user': 'TEXT',
             'age': 'INTEGER',
+            # 'id': 'PRIMARY KEY' Remember `id` is inserted by default
         }
 
         self.model = Model('test_db', **self.table)
@@ -21,7 +22,7 @@ class TestModel(unittest.TestCase):
         self.model.insert(user='john', age=25)
         data = self.model.fetch_all()
         self.assertGreater(len(data), 0)
-        self.assertEqual(len(self.model.fetch_last()), 1)
+        self.assertEqual(len(self.model.fetch_last()), 3)
 
     def test_edit(self):
         self.model.insert(user='john', age=25)
@@ -33,8 +34,8 @@ class TestModel(unittest.TestCase):
     def test_fetch_last(self):
         last_by = self.model.fetch_last('id')
         all_data = self.model.fetch_last()
-        self.assertIsInstance(all_data, list)
-        self.assertEqual(last_by, all_data[0][2])
+        self.assertIsInstance(all_data, tuple)
+        self.assertEqual(last_by, all_data[2])
 
     def test_insert_one(self):
         name = 'Elvis'

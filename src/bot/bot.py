@@ -218,11 +218,11 @@ class Bot(BotModel):
         assert type_.lower() in types,\
             f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
 
-        sub_name, replies = self.worst_sub()
         self.insert_reply(user.name, reply_id, sub_name)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
         samples = total_samples(SCAM_SAMPLES)
+        sub_name, replies = self.worst_sub()
         return f"""
 Based on {samples} samples I've gathered so far,
 this {type_} is highly sus and probably a scam. If you think this is right,
@@ -237,7 +237,7 @@ Note that I'm still under development!
 ^(I'm a bot and this action was performed automatically. Check out\
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
  to make any suggestions to make me better!)
-        """ % (f" | worst sub so far: {sub_name} total replies\
-                {replies}" if sub_name and replies else '',)
+        """ % (f" | worst sub so far: **{sub_name}** with **{replies}** total\
+ scams" if sub_name and replies else '',)
 
 # TODO: Remove the `under development` line

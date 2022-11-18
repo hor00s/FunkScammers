@@ -104,7 +104,7 @@ class Model:
         query = f"SELECT * FROM {self.name}"
         return self.execute(query, fetch=True)
 
-    def filter_row(self, data: Any, col: str | None = None) -> Any:
+    def filter_row(self, row: Any, col: str | None = None) -> Any:
         """If `col` is provided, this function will filter out a certain
         column out of a row
         ```
@@ -121,8 +121,8 @@ class Model:
         """
         enum_table = {row: num for (num, row) in enumerate(self.table)}
         if col is not None:
-            return data[0][enum_table[col]]
-        return data
+            return row[enum_table[col]]
+        return row
 
     def fetch_last(self, col: str | None = None) -> Any:
         """Fetch the last insertion based on id
@@ -137,7 +137,7 @@ class Model:
         WHERE id = (SELECT MAX(id)  FROM {self.name})
         """
         data = self.execute(query, fetch=True)
-        return self.filter_row(data, col)
+        return self.filter_row(data[-1], col)
 
     def edit(self, set: str, where: str) -> None:
         """Edit a row based on a condition, the sql that is being create is:
