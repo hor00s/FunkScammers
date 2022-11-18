@@ -189,7 +189,7 @@ class Bot(BotModel):
         """Based on the failed and succesful replies, return the
         success percentage of the bot
 
-        TODO: This function is very, very wrong
+        TODO: This function might be wrong
 
         :param failed: Total bad replies
         :type failed: int
@@ -198,10 +198,9 @@ class Bot(BotModel):
         :return: The total percentage between good and bad
         :rtype: float
         """
-        rate = (failed / succesed) * 100
-        if 0 < rate <= 100:
-            return float(f"{rate:.2f}")
-        return 0.0
+        total_replies = failed + succesed
+        rate = (1 - (failed / total_replies)) * 100
+        return float(f"{rate:.2f}")
 
     def reply(self, type_: str, user: Redditor,
               reply_id: str, sub_name: str) -> str:

@@ -30,3 +30,16 @@ class TestBot(unittest.TestCase):
         text = 'A completely unrelated text document'
         is_sus = self.bot.is_sus(text, data, max_num, total_matches)
         self.assertFalse(is_sus, msg="The bot can be a little un-predicted!")
+
+    def test_get_success_percentage(self):
+        v0 = self.bot.get_success_percentage(0, 10)
+        self.assertEqual(v0, 100.00)
+
+        v1 = self.bot.get_success_percentage(10, 10)
+        self.assertEqual(v1, 50.00)
+
+        v3 = self.bot.get_success_percentage(4, 12)
+        self.assertEqual(v3, 75.00)
+
+        v4 = self.bot.get_success_percentage(24, 8)
+        self.assertEqual(v4, 25.00)
