@@ -57,6 +57,34 @@ class BotModel(Model):
                         success_rate=s_rate, fail_rate=f_rate,
                         subs_name=subs_name)
 
+    def worst_sub(self, col: str = 'subs_name') -> tuple[str, int]:
+        """This function will count all the subs that the bot
+        has replied and return the most replied and return a tuple
+
+        :param col: The col of the row, defaults to 'subs_name'
+        :type col: str, optional
+        :return: ('sub_name' total_replies) if the db is not empty
+        else ('', 0) (a falsy dict)
+        :rtype: tuple[str, int]
+        """
+        counter = {}
+        replies = self.fetch_all()
+        for reply in replies:
+            sub_name = self.filter_row(reply, col)
+            if sub_name not in counter:
+                counter[sub_name] = 0
+            else:
+                counter[sub_name] += 1
+
+        try:
+            k = max(counter, key=counter.get)  # type: ignore
+            v = counter[k]
+        except ValueError:
+            print('database is empty')
+            return ('', 0)
+        else:
+            return (k, v)
+
 
 class Bot(BotModel):
     def __init__(self, username: str, password: str) -> None:
@@ -158,8 +186,22 @@ class Bot(BotModel):
                 pass
 
     def get_success_percentage(self, failed: int, succesed: int) -> float:
+        """Based on the failed and succesful replies, return the
+        success percentage of the bot
+
+        TODO: This function is very, very wrong
+
+        :param failed: Total bad replies
+        :type failed: int
+        :param succesed: Total good replies
+        :type succesed: int
+        :return: The total percentage between good and bad
+        :rtype: float
+        """
         rate = (failed / succesed) * 100
-        return float(f"{rate:.2f}")
+        if 0 < rate <= 100:
+            return float(f"{rate:.2f}")
+        return 0.0
 
     def reply(self, type_: str, user: Redditor,
               reply_id: str, sub_name: str) -> str:
@@ -176,6 +218,7 @@ class Bot(BotModel):
         assert type_.lower() in types,\
             f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
 
+        sub_name, replies = self.worst_sub()
         self.insert_reply(user.name, reply_id, sub_name)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
@@ -188,10 +231,13 @@ and this comment will delete it self automatically!
 
 Note that I'm still under development!
 
-^(My current rating is: {self.get_success_percentage(f_rate, s_rate)})%
+^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
+%s)
 
 ^(I'm a bot and this action was performed automatically. Check out\
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
  to make any suggestions to make me better!)
-        """
+        """ % (f" | worst sub so far: {sub_name} total replies\
+                {replies}" if sub_name and replies else '',)
+
 # TODO: Remove the `under development` line
