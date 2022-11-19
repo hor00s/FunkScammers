@@ -9,7 +9,15 @@ from generals import (
     SETTINGS,
 )
 
-settings = Settings(SETTINGS)
+settings = Settings(
+    SETTINGS,
+    sus_text_above="0.5",
+    max_downvotes="-3",
+    total_matches="2",
+    top_upvotes="10",
+    max_posts_lookup="50"
+)
+settings.init()
 
 try:
     import spacy

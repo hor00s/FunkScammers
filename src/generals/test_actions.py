@@ -58,7 +58,11 @@ class TestSettings(unittest.TestCase):
             'key1': 'value1',
             'key2': 'value2',
         }
-        self.settings = Settings('../.testsettings.json')
+        self.settings = Settings(
+            '../.testsettings.json',
+            **self.initial_settings
+        )
+        self.settings.init()
         with open(self.settings.settings_path, mode='w') as f:
             json.dump(self.initial_settings, f)
 

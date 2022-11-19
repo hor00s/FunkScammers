@@ -21,7 +21,15 @@ unittest_commands = (
     "python3 -m unittest models/test_models.py",
 )
 
-settings_manager = Settings(SETTINGS)
+settings_manager = Settings(
+    SETTINGS,
+    sus_text_above="0.5",
+    max_downvotes="-3",
+    total_matches="2",
+    top_upvotes="10",
+    max_posts_lookup="50"
+)
+settings_manager.init()
 
 
 def cli(*args, **kwargs):

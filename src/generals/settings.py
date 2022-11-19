@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 from typing import Any
@@ -9,14 +10,16 @@ __all__ = [
 
 
 class Settings:
-    def __init__(self, settings_path: Path) -> None:
+    def __init__(self, settings_path: Path, **conf: Any) -> None:
         """A `Settings` instance loads and handles a
         json file
 
         :param settings_path: A path to a json file
+        :param conf: The initial configuration
         :type settings_path: Path
         """
         self.settings_path = settings_path
+        self.conf = conf
 
     def __str__(self) -> str:
         return str(self.all)
@@ -34,6 +37,11 @@ class Settings:
         """
         with open(self.settings_path, mode='r') as f:
             return dict(json.load(f))
+
+    def init(self) -> None:
+        if not os.path.exists(self.settings_path):
+            with open(self.settings_path, mode='w') as f:
+                json.dump(self.conf, f)
 
     def get(self, key: Any) -> Any:
         """Get a certain *setting* from the file

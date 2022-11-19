@@ -21,7 +21,15 @@ def mainloop():
     """Mainloop of the program. This is where the actual
     bot operates.
     """
-    settings = Settings(SETTINGS)
+    settings = Settings(
+        SETTINGS,
+        sus_text_above="0.5",
+        max_downvotes="-3",
+        total_matches="2",
+        top_upvotes="10",
+        max_posts_lookup="50"
+    )
+    settings.init()
     # Just 2 alliases for these long-ass variable names
     sus_text_above = sta = float(settings.get('sus_text_above')) # noqa
     total_matches = tm = int(settings.get("total_matches")) # noqa
