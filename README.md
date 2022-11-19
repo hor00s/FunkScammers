@@ -64,6 +64,24 @@ pip install minimal-requirements.txt
 pip install mypy
 ```
 
+### Why use one installation over the other
+`SequenceMatcher` pros:
+- Built-in
+- Way less hardware demanding
+- Way smaller memory-wise
+
+`SequenceMatcher` cons:
+- Calculations are purely algorithmic ([semantic-similarity](https://en.wikipedia.org/wiki/Semantic_similarity)) and will leave the *context* of the sentence
+
+`Spacy` pros:
+- Calculatios are done by Machine Learning model ([en_core_web_lg](https://spacy.io/models/en))
+- Will attempt to understand the context of the text
+
+`Spacy` cons:
+- Heavy *memory wise*
+- More *hardware demading*
+- I personally find it to falsy rate un-related sentences very high (>0.7)
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
@@ -78,7 +96,7 @@ To run this project, you will need to add the following environment variables to
 
 Contributions are always welcome!
 
-**Always in need of more samples (See `samples` directory)**
+**Always in need of more samples (See `samples.csv`)**
 
 - Python version used: 3.10.x
 - Pip version used: 22.3.x
@@ -96,6 +114,7 @@ Finally, contributors may add their name with a hyperlink to their profile at th
 
 ### Ideas for contribution
 - Provide some scam posts/comments to train the model
+- Add some more loggin around the application
 - Find/Make a cool logo and put it at the top of this file
 - Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
 - Write better docstrings throughout the program
