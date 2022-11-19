@@ -15,7 +15,7 @@ try:
     import spacy
 except ModuleNotFoundError:
     from difflib import SequenceMatcher
-    settings.set("sus_text_above", "0.3")
+    settings.set("sus_text_above", "0.5")
     print("Running with `SequenceMatcher`")
 else:
     settings.set("sus_text_above", "0.92")
