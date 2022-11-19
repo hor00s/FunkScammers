@@ -1,8 +1,12 @@
 import json
 import unittest
 from .settings import Settings
+from .constants import SCAM_SAMPLES
 from .actions import (
     ascii_filter,
+    load_samples,
+    is_imported,
+    read_file,
 )
 
 
@@ -35,6 +39,17 @@ class TestActions(unittest.TestCase):
         ]
 
         self.assertEqual(data, expected)
+
+    def test_load_samples(self):
+        for i in load_samples(SCAM_SAMPLES):
+            self.assertIsInstance(i, str)
+
+    def test_is_imported(self):
+        self.assertTrue(is_imported('json'))
+        self.assertFalse(is_imported('spacy'))
+
+    def test_read_file(self):
+        self.assertIsInstance(read_file(SCAM_SAMPLES), str)
 
 
 class TestSettings(unittest.TestCase):

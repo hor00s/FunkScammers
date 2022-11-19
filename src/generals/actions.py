@@ -100,7 +100,7 @@ def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
     :param max_range: The maximum ascii value of\
         characters we want to keep, defaults to 127
     :type max_range: int, optional
-    :return: The same string only the charactes\
+    :return: The same string with only the characters\
         that are in between the `min_range` and `max_range`
     :rtype: str
     """
@@ -115,7 +115,7 @@ def load_samples(path: Path) -> Generator[str, None, None]:
 
     :param path: The directory where the samples are located
     :type path: Path
-    :yield: Each iteration yields the whole conent of one file
+    :yield: Each iteration yields a line pre-filtered with `ascii_filter`
     :rtype: Generator[str, None, None]
     """
     with open(path, mode='r') as f:
