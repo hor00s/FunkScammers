@@ -179,11 +179,12 @@ class Bot(BotModel):
         print("Checking my old comments")
         for comment in comments:
             if comment.score < max_downvotes:
+                print("Bad comment found")
                 self.comment_failed()
                 comment.delete()
             elif comment.score > max_upvotes:
+                print("Saving reply")
                 # TODO: Save text
-                pass
 
     def get_success_percentage(self, failed: int, succesed: int) -> float:
         """Based on the failed and succesful replies, return the
@@ -236,7 +237,7 @@ Note that I'm still under development!
 ^(I'm a bot and this action was performed automatically. Check out\
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
  to make any suggestions to make me better!)
-        """ % (f" | worst sub so far: **{sub_name}** with **{replies}** total\
- scams" if sub_name and replies else '',)
+        """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
+             total scams detected" if sub_name and replies else '',)
 
 # TODO: Remove the `under development` line
