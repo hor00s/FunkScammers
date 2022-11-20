@@ -50,49 +50,47 @@ def mainloop():
     bot.create_table()
     redditor = reddit.redditor(bot.name)
 
-    running = True
-    while running:
-        bot.check_comments(redditor, int(settings.get('max_downvotes')),
-                           int(settings.get('top_upvotes')))
-        search_limit = int(settings.get('max_posts_lookup'))
+    bot.check_comments(redditor, int(settings.get('max_downvotes')),
+                       int(settings.get('top_upvotes')))
 
-        samples = tuple(actions.load_samples(SCAM_SAMPLES))
-        followed_subs = reddit.user.subreddits(limit=None)
+    search_limit = int(settings.get('max_posts_lookup'))
 
-        for sub in followed_subs:
-            sub_name = str(sub)
-            print('iterating sub:', sub_name)
-            new = reddit.subreddit(sub_name).new(limit=search_limit)
-            hot = reddit.subreddit(sub_name).hot(limit=search_limit)
-            for post in list(new) + list(hot):
-                if bot.is_sus(af(post.selftext), samples, sta, tm):
-                    if post.author != bot.name and\
-                            not bot.already_replied(post.id):
-                        post.reply(bot.reply('post', post.author,
-                                             post.id, sub_name))
-                        print("We've a sus post in", sub_name)
+    samples = tuple(actions.load_samples(SCAM_SAMPLES))
+    followed_subs = reddit.user.subreddits(limit=None)
 
-                for comment in post.comments:
-                    if isinstance(comment, MoreComments):
+    for sub in followed_subs:
+        sub_name = str(sub)
+        print('iterating sub:', sub_name)
+        new = reddit.subreddit(sub_name).new(limit=search_limit)
+        hot = reddit.subreddit(sub_name).hot(limit=search_limit)
+        for post in list(new) + list(hot):
+            if bot.is_sus(af(post.selftext), samples, sta, tm):
+                if post.author != bot.name and\
+                        not bot.already_replied(post.id):
+                    post.reply(bot.reply('post', post.author,
+                                         post.id, sub_name))
+                    print("We've a sus post in", sub_name)
+
+            for comment in post.comments:
+                if isinstance(comment, MoreComments):
+                    continue
+                if bot.is_sus(af(comment.body), samples, sta, tm):
+                    if comment.author != bot.name and\
+                            not bot.already_replied(comment.id):
+                        print("We've a sus top in , sub_namelevel comment")
+                        comment.reply(bot.reply('comment', comment.author,
+                                                comment.id,
+                                                sub_name))
+
+                for reply in comment.replies:
+                    if isinstance(reply, MoreComments):
                         continue
-                    if bot.is_sus(af(comment.body), samples, sta, tm):
-                        if comment.author != bot.name and\
+                    if bot.is_sus(af(reply.body), samples, sta, tm):
+                        if reply.author != bot.name and\
                                 not bot.already_replied(comment.id):
-                            print("We've a sus top in , sub_namelevel comment")
-                            comment.reply(bot.reply('comment', comment.author,
-                                                    comment.id,
-                                                    sub_name))
-
-                    for reply in comment.replies:
-                        if isinstance(reply, MoreComments):
-                            continue
-                        if bot.is_sus(af(reply.body), samples, sta, tm):
-                            if reply.author != bot.name and\
-                                    not bot.already_replied(comment.id):
-                                print("We've a sus reply in", sub_name)
-                                reply.reply(bot.reply('comment',
-                                            reply.author,
-                                            comment.id,
-                                            sub_name))
-
-    running = False
+                            print("We've a sus reply in", sub_name)
+                            reply.reply(bot.reply('comment',
+                                        reply.author,
+                                        comment.id,
+                                        sub_name))
+    print('Done')
