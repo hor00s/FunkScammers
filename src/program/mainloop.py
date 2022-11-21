@@ -7,6 +7,7 @@ from generals import (
     actions,
     SCAM_SAMPLES,
     SETTINGS,
+    DEF_SETTINGS,
     ascii_filter as af,
 )
 from dotenv import (
@@ -23,11 +24,7 @@ def mainloop():
     """
     settings = Settings(
         SETTINGS,
-        sus_text_above="0.5",
-        max_downvotes="-3",
-        total_matches="2",
-        top_upvotes="10",
-        max_posts_lookup="50"
+        **DEF_SETTINGS
     )
     settings.init()
     # Just 2 alliases for these long-ass variable names
@@ -67,8 +64,8 @@ def mainloop():
             if bot.is_sus(af(post.selftext), samples, sta, tm):
                 if post.author != bot.name and\
                         not bot.already_replied(post.id):
-                    post.reply(bot.reply('post', post.author,
-                                         post.id, sub_name))
+                    bot.reply('post', post.author,
+                              post.id, sub_name, post)
                     print("We've a sus post in", sub_name)
 
             for comment in post.comments:
@@ -78,9 +75,8 @@ def mainloop():
                     if comment.author != bot.name and\
                             not bot.already_replied(comment.id):
                         print("We've a sus top in , sub_namelevel comment")
-                        comment.reply(bot.reply('comment', comment.author,
-                                                comment.id,
-                                                sub_name))
+                        bot.reply('comment', comment.author,
+                                  comment.id, sub_name, comment)
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):
@@ -89,8 +85,5 @@ def mainloop():
                         if reply.author != bot.name and\
                                 not bot.already_replied(comment.id):
                             print("We've a sus reply in", sub_name)
-                            reply.reply(bot.reply('comment',
-                                        reply.author,
-                                        comment.id,
-                                        sub_name))
-    print('Done')
+                            bot.reply('comment', reply.author, comment.id,
+                                      sub_name, reply)

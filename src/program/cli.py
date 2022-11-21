@@ -4,6 +4,7 @@ from generals import (
     SETTINGS,
     SCAM_SAMPLES,
     ERROR_LOGGER,
+    DEF_SETTINGS,
     actions
 )
 
@@ -23,11 +24,7 @@ unittest_commands = (
 
 settings_manager = Settings(
     SETTINGS,
-    sus_text_above="0.5",
-    max_downvotes="-3",
-    total_matches="2",
-    top_upvotes="10",
-    max_posts_lookup="50"
+    **DEF_SETTINGS
 )
 settings_manager.init()
 
@@ -61,6 +58,8 @@ def cli(*args, **kwargs):
             key = args[3][1:]
             value = args[4]
             settings_manager.set(key, value)
+        elif args[2] == 'init':
+            settings_manager.init()
 
     # ./funcscammers sample "The text that is supposed to be in the file"
     # (preferably in one line)"

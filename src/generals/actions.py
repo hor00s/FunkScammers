@@ -87,9 +87,8 @@ def total_samples(path: Path) -> int:
 
 
 def ascii_filter(sent: str, min_range: int = 0, max_range: int = 127) -> str:
-    """Removes every character that is **less** that min_range **or**
-    more that the **max_range** in an attempt to remove emojis or
-    other un-wanted characters
+    """Removes every character that is now between min and max range
+    in an attempt to remove emojis or other un-wanted characters
 
     :param sent: The whole string that needs to be filtered\
         (A whole reply for example)

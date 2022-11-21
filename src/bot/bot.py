@@ -1,21 +1,21 @@
 from models import Model
 from typing import Iterable
-from praw.reddit import Redditor  # type: ignore
+from praw.reddit import (  # type: ignore
+    Redditor,
+    Submission
+)
 from generals import (
     Settings,
     total_samples,
     is_imported,
+    DEF_SETTINGS,
     SCAM_SAMPLES,
     SETTINGS,
 )
 
 settings = Settings(
     SETTINGS,
-    sus_text_above="0.5",
-    max_downvotes="-3",
-    total_matches="2",
-    top_upvotes="10",
-    max_posts_lookup="50"
+    **DEF_SETTINGS
 )
 settings.init()
 
@@ -212,7 +212,7 @@ class Bot(BotModel):
         return float(f"{rate:.2f}")
 
     def reply(self, type_: str, user: Redditor,
-              reply_id: str, sub_name: str) -> str:
+              reply_id: str, sub_name: str, comment: Submission) -> None:
         """Returns the proper reply for sus posts/replies
 
         :param type_: The type of text the bot replies to (post/comment)
@@ -231,13 +231,11 @@ class Bot(BotModel):
         f_rate = self.fetch_last('fail_rate')
         samples = total_samples(SCAM_SAMPLES)
         sub_name, replies = self.worst_sub()
-        return f"""
+        comment.reply(f"""
 Based on {samples} samples I've gathered so far,
 this {type_} is highly sus and probably a scam. If you think this is right,
 please consider reporting u/{user.name}. If you disagree, downvote my reply
 and this comment will delete it self automatically!
-
-Note that I'm still under development!
 
 ^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
 %s)
@@ -246,6 +244,4 @@ Note that I'm still under development!
  my [source code](https://github.com/hor00s/FunkScammers) and feel free\
  to make any suggestions to make me better!)
         """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
-             total scams detected" if sub_name and replies else '',)
-
-# TODO: Remove the `under development` line
+             total scams detected" if sub_name and replies else '',))
