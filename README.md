@@ -28,19 +28,20 @@ The bot, with the help of [en_core_web_lg model](https://www.datasciencelearner.
 
 #### ~ Why these subreddits?
 
-The bot mostly follows *learning related* subreddits where I, as the author, personally think that enthusiastic people that want to learn something, may fall to a trap on some *great offer* / *fast learning opportunity* that seems to good to be true 
+The bot mostly follows *learning related* subreddits where I, as the author, personally think that enthusiastic people that want to learn something, may fall to a trap on some *great offer* / *fast learning opportunity* that seems to good to be true.
 
 ## Features
 
 - Reply to sus posts
-- Reply to sus comments 
 - Reply to sus comments recursively
 - Delete it's own comments that have *x* number of downvotes
+- Keep track of it's score
+- Keep track of the sub with the bigger ammount of sus submissions found
 - And hopefully, more soon...
 
 ## Installation
 
-Yes, this project is fully open-source and under MIT, so anyone can install it and make changes/try to tweak the settings and make it better (or worst).
+Anyone may install this program and make changes/try to tweak the settings and make it better (or worst)!
 
 Linux installation:
 
@@ -71,16 +72,16 @@ pip install mypy
 - Way smaller memory-wise
 
 `SequenceMatcher` cons:
-- Calculations are purely algorithmic ([semantic-similarity](https://en.wikipedia.org/wiki/Semantic_similarity)) and will leave the *context* of the sentence
+- Calculations are purely algorithmic and will not account for the *context* of a sentence
 
 `Spacy` pros:
 - Calculatios are done by Machine Learning model ([en_core_web_lg](https://spacy.io/models/en))
-- Will attempt to understand the context of the text
+- Will attempt to understand the context of the a sentence
 
 `Spacy` cons:
-- Heavy *memory wise*
-- More *hardware demading*
-- I personally find it to falsy rate un-related sentences very high (>0.7)
+- *Heavy* memory wise
+- More **hardware demading**
+
 
 ## Environment Variables
 
@@ -113,11 +114,11 @@ It's also worth mentioning that the program follows the `sphinx` docstring forma
 Finally, contributors may add their name with a hyperlink to their profile at the **Contributors** section at  the bottom of this file!
 
 ### Ideas for contribution
-- Provide some scam posts/comments to train the model
-- Add some more loggin around the application
+- Provide some scam posts/comments for the bot
+- Add some more logging around the application
 - Find/Make a cool logo and put it at the top of this file
-- Finish the cli with whatever tool you feel confortable with (`argaparse`, `click` etc.. you name it)
-- Write better docstrings throughout the program
+- Finish the cli with whatever tool you feel comfortable with (`argaparse`, `click` etc.. you name it)
+- Write better docstrings throughout the functions/classes
 - Make the documentation better
 - Refactor the `src/program/mainloop.py`
 
@@ -136,3 +137,6 @@ This project is currently tested with `unittest` and it follows `mypy`'s `--stri
 
 ## Contributors
 * N/A
+
+## Worthy mentions
+* u/BicarbonateOfSofa
