@@ -69,7 +69,8 @@ def cli(*args, **kwargs):
 text in double quotes (`"text that you want to write"`)')
         actions.append_sample(SCAM_SAMPLES, args[2])
 
+    # ./funcscammers lasterror
     elif args[1] == 'lasterror':
-        # TODO: Show last error from logs
-        ERROR_LOGGER
+        a = actions.read_file(ERROR_LOGGER)
+        print(a.split('---------------------------')[-2])
         pass
