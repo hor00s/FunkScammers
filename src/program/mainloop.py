@@ -1,7 +1,8 @@
 import os
 import praw
-from praw.models.comment_forest import MoreComments
 from bot import Bot
+from praw.models.comment_forest import MoreComments
+from praw.reddit import Submission
 from generals import (
     Settings,
     actions,
@@ -16,6 +17,12 @@ from dotenv import (
 )
 
 load_dotenv(find_dotenv())
+
+
+def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
+    if post.author != bot.name and not bot.already_replied(post.id):
+        bot.reply(type_, post.author, post.id, sub_name, post)
+        print("We've a sus post in", sub_name)
 
 
 def mainloop():
@@ -60,30 +67,22 @@ def mainloop():
         print('iterating sub:', sub_name)
         new = reddit.subreddit(sub_name).new(limit=search_limit)
         hot = reddit.subreddit(sub_name).hot(limit=search_limit)
+
         for post in list(new) + list(hot):
-            if bot.is_sus(af(post.selftext), samples, sta, tm):
-                if post.author != bot.name and\
-                        not bot.already_replied(post.id):
-                    bot.reply('post', post.author,
-                              post.id, sub_name, post)
-                    print("We've a sus post in", sub_name)
+            text = post.selftext
+            if bot.is_sus(af(text), samples, sta, tm) and text:
+                bot_reply(post, bot, sub_name, 'post')
 
             for comment in post.comments:
                 if isinstance(comment, MoreComments):
                     continue
-                if bot.is_sus(af(comment.body), samples, sta, tm):
-                    if comment.author != bot.name and\
-                            not bot.already_replied(comment.id):
-                        print("We've a sus top in , sub_namelevel comment")
-                        bot.reply('comment', comment.author,
-                                  comment.id, sub_name, comment)
+                text = comment.body
+                if bot.is_sus(af(text), samples, sta, tm) and text:
+                    bot_reply(comment, bot, sub_name, 'comment')
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):
                         continue
-                    if bot.is_sus(af(reply.body), samples, sta, tm):
-                        if reply.author != bot.name and\
-                                not bot.already_replied(comment.id):
-                            print("We've a sus reply in", sub_name)
-                            bot.reply('comment', reply.author, comment.id,
-                                      sub_name, reply)
+                    text = reply.body
+                    if bot.is_sus(af(text), samples, sta, tm) and text:
+                        bot_reply(comment, bot, sub_name, 'comment')

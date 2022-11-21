@@ -213,7 +213,7 @@ class Bot(BotModel):
 
     def reply(self, type_: str, user: Redditor,
               reply_id: str, sub_name: str, comment: Submission) -> None:
-        """Returns the proper reply for sus posts/replies
+        """Posts the proper reply for a sus submission
 
         :param type_: The type of text the bot replies to (post/comment)
         :type type_: str
