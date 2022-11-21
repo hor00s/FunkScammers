@@ -42,7 +42,12 @@ class BotModel(Model):
         super().__init__(name, **self.table)
 
     def comment_failed(self) -> None:
+        """Edit the last entry inserted by adding one (1) to
+        `fail_rate` and substracting one (1) from `success_rate`
+        """
         try:
+            # TODO: Maybe I should also remove the 'said comment' by `reply_id`
+            # but then, I might lose track of success/fail rate..
             last_id = self.fetch_last('id')
             last_success = self.fetch_last('success_rate') - 1
             last_fail = self.fetch_last('fail_rate') + 1
@@ -53,26 +58,36 @@ class BotModel(Model):
         except IndexError:
             print('No comments have been inserted yet')
 
-    def insert_reply(self, auth: str, rep_id: str, subs_name: str) -> None:
+    def insert_reply(self, author: str, rep_id: str, subs_name: str) -> None:
+        """Insert a reply to the database
 
+        :param auth: The name of the redditor that made the comment/post
+        :type auth: str
+        :param rep_id: "Scammer's" comment/post id
+        :type rep_id: str
+        :param subs_name: The name of the sub the comment/post was found
+        :type subs_name: str
+        """
         if not len(self.fetch_all()):
-            self.insert(author=auth, reply_id=rep_id,
+            # If the database is empty, we initialize success and fail rates
+            self.insert(author=author, reply_id=rep_id,
                         success_rate=1, fail_rate=0, subs_name=subs_name)
         else:
+            # Otherwhise we use the proper counter
             s_rate = self.fetch_last('success_rate') + 1
             f_rate = self.fetch_last('fail_rate')
-            self.insert(author=auth, reply_id=rep_id,
+            self.insert(author=author, reply_id=rep_id,
                         success_rate=s_rate, fail_rate=f_rate,
                         subs_name=subs_name)
 
     def worst_sub(self, col: str = 'subs_name') -> tuple[str, int]:
         """This function will count all the subs that the bot
-        has replied and return the most replied and return a tuple
+        has replied and return whichever it has replied the most
 
         :param col: The col of the row, defaults to 'subs_name'
         :type col: str, optional
         :return: ('sub_name' total_replies) if the db is not empty
-        else ('', 0) (a falsy dict)
+        else ('', 0) (a falsy tuple)
         :rtype: tuple[str, int]
         """
         counter = {}
@@ -89,8 +104,10 @@ class BotModel(Model):
             v = counter[k]
         except ValueError:
             print('database is empty')
+            # Keep the return value consistent by returning a `falsy` tuple
             return ('', 0)
         else:
+            # (sub_name, ammount_of_replies)
             return (k, v)
 
 
@@ -198,7 +215,7 @@ class Bot(BotModel):
         """Based on the failed and succesful replies, return the
         success percentage of the bot
 
-        TODO: This function might be wrong
+        TODO: I'm not sure about the accuracy of this function
 
         :param failed: Total bad replies
         :type failed: int
@@ -222,15 +239,19 @@ class Bot(BotModel):
         :Raises AsserionError: As a safety mechanism in case `type_`
             argument is invalid
         """
-        types = ['comment', 'post']
+        types = ('comment', 'post')
         assert type_.lower() in types,\
-            f"Invalid argument type_ `{type_}` expected `{', '.join(types)}`"
+            f"Invalid argument type `{type_}`. Expected: {' or '.join(types)}"
 
         self.insert_reply(user.name, reply_id, sub_name)
         s_rate = self.fetch_last('success_rate')
         f_rate = self.fetch_last('fail_rate')
+
         samples = total_samples(SCAM_SAMPLES)
         sub_name, replies = self.worst_sub()
+        # Remember, if the database is empty,
+        # `sub_name` and `replies` will be `falsy`
+
         comment.reply(f"""
 Based on {samples} samples I've gathered so far,
 this {type_} is highly sus and probably a scam. If you think this is right,
