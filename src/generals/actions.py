@@ -120,7 +120,7 @@ def load_samples(path: Path) -> Generator[str, None, None]:
     with open(path, mode='r') as f:
         reader = csv.reader(f)
         for row in reader:
-            yield ascii_filter(row[0])
+            yield ascii_filter(row[0].lower())
 
 
 def is_imported(module: Any | object) -> bool:
