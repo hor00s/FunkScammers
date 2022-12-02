@@ -243,26 +243,30 @@ class Bot(BotModel):
         assert type_.lower() in types,\
             f"Invalid argument type `{type_}`. Expected: {' or '.join(types)}"
 
-        self.insert_reply(user.name, reply_id, sub_name)
-        s_rate = self.fetch_last('success_rate')
-        f_rate = self.fetch_last('fail_rate')
+        # Added this check because if an account gets deleted but the comment
+        # stays, bot attepts to reply but `user` ends up being `None`
+        # thus giving an `AttributeError`
+        if user.name is not None:
+            self.insert_reply(user.name, reply_id, sub_name)
+            s_rate = self.fetch_last('success_rate')
+            f_rate = self.fetch_last('fail_rate')
 
-        samples = total_samples(SCAM_SAMPLES)
-        sub_name, replies = self.worst_sub()
-        # Remember, if the database is empty,
-        # `sub_name` and `replies` will be `falsy`
+            samples = total_samples(SCAM_SAMPLES)
+            sub_name, replies = self.worst_sub()
+            # Remember, if the database is empty,
+            # `sub_name` and `replies` will be `falsy`
 
-        comment.reply(f"""
-Based on {samples} samples I've gathered so far,
-this {type_} is highly sus and probably a scam. If you think this is right,
-please consider reporting u/{user.name}. If you disagree, downvote my reply
-and this comment will delete it self automatically!
+            comment.reply(f"""
+    Based on {samples} samples I've gathered so far,
+    this {type_} is highly sus and probably a scam. If you think this is right,
+    please consider reporting u/{user.name}. If you disagree, downvote my reply
+    and this comment will delete it self automatically!
 
-^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
-%s)
+    ^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
+    %s)
 
-^(I'm a bot and this action was performed automatically. Check out\
- my [source code](https://github.com/hor00s/FunkScammers) and feel free\
- to make any suggestions to make me better!)
-        """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
-             total scams detected" if sub_name and replies else '',))
+    ^(I'm a bot and this action was performed automatically. Check out\
+    my [source code](https://github.com/hor00s/FunkScammers) and feel free\
+    to make any suggestions to make me better!)
+            """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
+    total scams detected" if sub_name and replies else '',))
