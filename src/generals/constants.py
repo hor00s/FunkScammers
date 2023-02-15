@@ -7,6 +7,7 @@ __all__ = [
     'SCAM_SAMPLES',
     'ERROR_LOGGER',
     'DEF_SETTINGS',
+    'BASE_DIR',
 ]
 
 
@@ -17,14 +18,15 @@ class Conf(TypedDict):
     top_upvotes: str
     max_posts_lookup: str
 
-
-SETTINGS:     Path = Path('../settings.json')
-SCAM_SAMPLES: Path = Path('../samples.csv')
-ERROR_LOGGER: Path = Path('../error_logs.txt')
+BASE_DIR:     Path = Path(__file__).parent.parent.parent
+SETTINGS:     Path = Path(f'{BASE_DIR}/settings.json')
+SCAM_SAMPLES: Path = Path(f'{BASE_DIR}/samples.csv')
+ERROR_LOGGER: Path = Path(f'{BASE_DIR}/error_logs.txt')
 DEF_SETTINGS: Conf = {
     "sus_text_above": "0.92",
     "max_downvotes": "-3",
     "total_matches": "2",
     "top_upvotes": "10",
-    "max_posts_lookup": "50"
+    "max_posts_lookup": "50",
+    "worth_logging": "0.1",
 }

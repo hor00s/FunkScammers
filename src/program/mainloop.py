@@ -1,5 +1,6 @@
 import os
 import praw
+import logger
 from bot import Bot
 from praw.models.comment_forest import MoreComments
 from praw.reddit import Submission
@@ -7,8 +8,9 @@ from generals import (
     Settings,
     actions,
     SCAM_SAMPLES,
-    SETTINGS,
     DEF_SETTINGS,
+    SETTINGS,
+    BASE_DIR,
     ascii_filter as af,
 )
 from dotenv import (
@@ -16,7 +18,9 @@ from dotenv import (
     load_dotenv,
 )
 
+
 load_dotenv(find_dotenv())
+log = logger.Logger(1, f"{BASE_DIR}/.logs.txt")
 
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
@@ -37,6 +41,7 @@ def mainloop():
     # Just 2 alliases for these long-ass variable names
     sus_text_above = sta = float(settings.get('sus_text_above')) # noqa
     total_matches = tm = int(settings.get("total_matches")) # noqa
+    worth_logging = wl = float(settings.get('worth_logging'))
 
     bot = Bot(
         username=os.environ['username'],
@@ -72,6 +77,9 @@ def mainloop():
             text = post.selftext
             if bot.is_sus(af(text), samples, sta, tm) and text:
                 bot_reply(post, bot, sub_name, 'post')
+            if bot.is_sus(text, samples, wl, tm):
+                log.info(f"Saving: `{text}`")
+
 
             for comment in post.comments:
                 if isinstance(comment, MoreComments):
@@ -79,6 +87,9 @@ def mainloop():
                 text = comment.body
                 if bot.is_sus(af(text), samples, sta, tm) and text:
                     bot_reply(comment, bot, sub_name, 'comment')
+                if bot.is_sus(text, samples, wl, tm):
+                    log.info(f"Saving: `{text}`")
+
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):
@@ -86,3 +97,5 @@ def mainloop():
                     text = reply.body
                     if bot.is_sus(af(text), samples, sta, tm) and text:
                         bot_reply(comment, bot, sub_name, 'comment')
+                    if bot.is_sus(text, samples, wl, tm):
+                        log.info(f"Saving: `{text}`")

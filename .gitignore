@@ -10,3 +10,5 @@ src/test_db
 src/FunkScammersBot
 mvenv
 settings.json
+FunkScammersBot
+*.txt
