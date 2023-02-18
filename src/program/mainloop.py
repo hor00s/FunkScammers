@@ -42,6 +42,7 @@ def mainloop():
     sus_text_above = sta = float(settings.get('sus_text_above'))  # noqa
     total_matches = tm = int(settings.get("total_matches"))  # noqa
     worth_logging = wl = float(settings.get('worth_logging'))  # noqa
+    abort_chars = settings.get('abort_chars')
 
     bot = Bot(
         username=os.environ['username'],
@@ -75,25 +76,25 @@ def mainloop():
 
         for post in list(new) + list(hot):
             text = post.selftext
-            if bot.is_sus(af(text), samples, sta, tm) and text:
+            if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
                 bot_reply(post, bot, sub_name, 'post')
-            if bot.is_sus(text, samples, wl, tm):
+            if bot.is_sus(text, samples, wl, tm, abort_chars):
                 log.info(f"Saving: `{text}`")
 
             for comment in post.comments:
                 if isinstance(comment, MoreComments):
                     continue
                 text = comment.body
-                if bot.is_sus(af(text), samples, sta, tm) and text:
+                if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
                     bot_reply(comment, bot, sub_name, 'comment')
-                if bot.is_sus(text, samples, wl, tm):
+                if bot.is_sus(text, samples, wl, tm, abort_chars):
                     log.info(f"Saving: `{text}`")
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):
                         continue
                     text = reply.body
-                    if bot.is_sus(af(text), samples, sta, tm) and text:
+                    if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
                         bot_reply(comment, bot, sub_name, 'comment')
-                    if bot.is_sus(text, samples, wl, tm):
+                    if bot.is_sus(text, samples, wl, tm, abort_chars):
                         log.info(f"Saving: `{text}`")

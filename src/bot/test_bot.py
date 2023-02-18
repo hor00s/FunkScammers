@@ -23,12 +23,12 @@ class TestBot(unittest.TestCase):
 
         # True case
         text = 'This text is sus'
-        is_sus = self.bot.is_sus(text, data, max_num, total_matches)
+        is_sus = self.bot.is_sus(text, data, max_num, total_matches, [])
         self.assertTrue(is_sus, msg="The bot can be a little un-predicted!")
 
         # False case
         text = 'A completely unrelated text document'
-        is_sus = self.bot.is_sus(text, data, max_num, total_matches)
+        is_sus = self.bot.is_sus(text, data, max_num, total_matches, [])
         self.assertFalse(is_sus, msg="The bot can be a little un-predicted!")
 
     def test_get_success_percentage(self):
@@ -43,3 +43,46 @@ class TestBot(unittest.TestCase):
 
         v4 = self.bot.get_success_percentage(24, 8)
         self.assertEqual(v4, 25.00)
+
+    def test_parse(self):
+        text = """
+
+        This is a text that
+
+        contains new lines,  unneccesary spaces
+            and some indentation.
+
+        we will also add some empty lines
+
+        /s
+        """
+        expected = ['this', 'is', 'a', 'text', 'that', 'contains', 'new', 'lines', 'unneccesary', 'spaces', 'and', 'some', 'indentation', 'we', 'will', 'also', 'add', 'some', 'empty', 'lines', '/s']
+        self.assertEqual(list(self.bot._parse_text(text)), expected)
+
+    def test_abort(self):
+        abort_chars = ['/s', '/j']
+        text = """
+
+        This is a text that
+
+        contains new lines,  unneccesary spaces
+            and some indentation.
+
+        we will also add some empty lines
+
+        /s
+        """
+
+        self.assertTrue(self.bot.text_is_s(text, abort_chars))
+
+        text = """
+
+        This is a text that
+
+        contains new lines,  unneccesary spaces
+            and some indentation.
+
+        we will also add some empty lines
+
+        """
+        self.assertFalse(self.bot.text_is_s(text, abort_chars))

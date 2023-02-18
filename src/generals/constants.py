@@ -30,4 +30,5 @@ DEF_SETTINGS: Conf = {
     "top_upvotes": "10",
     "max_posts_lookup": "50",
     "worth_logging": "0.1",
+    "abort_chars": ['/s', '/j']
 }

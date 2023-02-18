@@ -1,5 +1,9 @@
 from models import Model
-from typing import Iterable
+from typing import (
+    Generator,
+    Iterable,
+    List
+)
 from praw.reddit import (  # type: ignore
     Redditor,
     Submission
@@ -138,11 +142,21 @@ class Bot(BotModel):
     def password(self) -> str:
         return self._passwd
 
+    def _parse_text(self, text: str) -> Generator[str, None, None]:
+        return map(
+            lambda i: i[:-1] if i.endswith('.') or i.endswith(',') else i,
+            [word.lower() for sentence in text.split(' ')
+            for word in sentence.split('\n') if word]
+        )
+
+    def text_is_s(self, text: str, abort_chars: List[str]):
+        return any(i in abort_chars for i in self._parse_text(text))
+
     def already_replied(self, comment_id: str) -> bool:
         return any(i for i in self.fetch_all() if comment_id in i)
 
     def is_sus(self, text: str, samples: Iterable[str],
-               top_match: float, total_matches: int) -> bool:
+               top_match: float, total_matches: int, abort_chars: List[str]) -> bool:
         """Top part: Based on `en_core_web_lg` AI language proccessing model
         (more info in `references.txt`) of `spacy` library, this function
         checks whether the `text` provided matches with (more or equal)
@@ -173,21 +187,22 @@ class Bot(BotModel):
             *x* with any of the samples
         :rtype: bool
         """
-        if is_imported('spacy'):
-            nlp = spacy.load('en_core_web_lg')  # noqa
-            return len(
-                tuple(filter(
-                    lambda sentence: nlp(sentence)
-                    .similarity(nlp(text)) > top_match, samples
-                ))
-            ) >= total_matches
-        else:
-            return len(
-                tuple(filter(
-                    lambda sentence: SequenceMatcher(None, sentence, text)
-                    .ratio() > top_match, samples
-                ))
-            ) >= total_matches
+        if not self.text_is_s(text, abort_chars):
+            if is_imported('spacy'):
+                nlp = spacy.load('en_core_web_lg')  # noqa
+                return len(
+                    tuple(filter(
+                        lambda sentence: nlp(sentence)
+                        .similarity(nlp(text)) > top_match, samples
+                    ))
+                ) >= total_matches
+            else:
+                return len(
+                    tuple(filter(
+                        lambda sentence: SequenceMatcher(None, sentence, text)
+                        .ratio() > top_match, samples
+                    ))
+                ) >= total_matches
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:
