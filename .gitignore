@@ -11,4 +11,6 @@ src/FunkScammersBot
 mvenv
 settings.json
 FunkScammersBot
+FunkScammersBot.sqlite
 *.txt
+test_db.sqlite

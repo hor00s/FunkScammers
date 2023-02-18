@@ -18,6 +18,7 @@ class Conf(TypedDict):
     top_upvotes: str
     max_posts_lookup: str
 
+
 BASE_DIR:     Path = Path(__file__).parent.parent.parent
 SETTINGS:     Path = Path(f'{BASE_DIR}/settings.json')
 SCAM_SAMPLES: Path = Path(f'{BASE_DIR}/samples.csv')

@@ -39,9 +39,9 @@ def mainloop():
     )
     settings.init()
     # Just 2 alliases for these long-ass variable names
-    sus_text_above = sta = float(settings.get('sus_text_above')) # noqa
-    total_matches = tm = int(settings.get("total_matches")) # noqa
-    worth_logging = wl = float(settings.get('worth_logging'))
+    sus_text_above = sta = float(settings.get('sus_text_above'))  # noqa
+    total_matches = tm = int(settings.get("total_matches"))  # noqa
+    worth_logging = wl = float(settings.get('worth_logging'))  # noqa
 
     bot = Bot(
         username=os.environ['username'],
@@ -80,7 +80,6 @@ def mainloop():
             if bot.is_sus(text, samples, wl, tm):
                 log.info(f"Saving: `{text}`")
 
-
             for comment in post.comments:
                 if isinstance(comment, MoreComments):
                     continue
@@ -89,7 +88,6 @@ def mainloop():
                     bot_reply(comment, bot, sub_name, 'comment')
                 if bot.is_sus(text, samples, wl, tm):
                     log.info(f"Saving: `{text}`")
-
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):

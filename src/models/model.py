@@ -11,7 +11,7 @@ __all__ = ['Model']
 class ConnectionManager:
     def __init__(self, name: str) -> None:
         self.name = name
-        self._connection = sqlite.connect(self.name)
+        self._connection = sqlite.connect(f"{self.name}.sqlite")
 
     def __enter__(self) -> Connection:
         return self._connection

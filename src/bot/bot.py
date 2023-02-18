@@ -1,4 +1,3 @@
-import logger
 from models import Model
 from typing import Iterable
 from praw.reddit import (  # type: ignore
