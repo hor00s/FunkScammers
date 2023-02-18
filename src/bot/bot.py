@@ -258,16 +258,16 @@ class Bot(BotModel):
             # `sub_name` and `replies` will be `falsy`
 
             comment.reply(f"""
-    Based on {samples} samples I've gathered so far,
-    this {type_} is highly sus and probably a scam. If you think this is right,
-    please consider reporting u/{user.name}. If you disagree, downvote my reply
-    and this comment will delete it self automatically!
+Based on {samples} samples I've gathered so far,
+this {type_} is highly sus and probably a scam. If you think this is right,
+please consider reporting u/{user.name}. If you disagree, downvote my reply
+and this comment will delete it self automatically!
 
-    ^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
-    %s)
+^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
+%s)
 
-    ^(I'm a bot and this action was performed automatically. Check out\
-    my [source code](https://github.com/hor00s/FunkScammers) and feel free\
-    to make any suggestions to make me better!)
-            """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
-    total scams detected" if sub_name and replies else '',))
+^(I'm a bot and this action was performed automatically. Check out\
+my [source code](https://github.com/hor00s/FunkScammers) and feel free\
+to make any suggestions to make me better!)
+        """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
+total scams detected" if sub_name and replies else '',))
