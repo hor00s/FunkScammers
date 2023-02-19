@@ -24,7 +24,7 @@ log = logger.Logger(1, f"{BASE_DIR}/.logs.txt")
 
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
-    if post.author != bot.name and not bot.already_replied(post.id):
+    if post.author != bot.name and not bot.already_replied(post.id, bot.fetch_all()):
         bot.reply(type_, post.author, post.id, sub_name, post)
         print("We've a sus post in", sub_name)
 

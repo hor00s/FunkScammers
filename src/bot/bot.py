@@ -2,7 +2,8 @@ from models import Model
 from typing import (
     Generator,
     Iterable,
-    List
+    List,
+    Any,
 )
 from praw.reddit import (  # type: ignore
     Redditor,
@@ -152,8 +153,8 @@ class Bot(BotModel):
     def text_is_s(self, text: str, abort_chars: List[str]):
         return any(i in abort_chars for i in self._parse_text(text))
 
-    def already_replied(self, comment_id: str) -> bool:
-        return any(i for i in self.fetch_all() if comment_id in i)
+    def already_replied(self, comment_id: str, data: Any) -> bool:
+        return any(comment_id in i for i in data)
 
     def is_sus(self, text: str, samples: Iterable[str],
                top_match: float, total_matches: int, abort_chars: List[str]) -> bool:
@@ -203,6 +204,7 @@ class Bot(BotModel):
                         .ratio() > top_match, samples
                     ))
                 ) >= total_matches
+        return 0
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:

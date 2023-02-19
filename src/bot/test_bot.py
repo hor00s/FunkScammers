@@ -12,6 +12,12 @@ class TestBot(unittest.TestCase):
         self.assertEqual(self.usernm, self.bot.name)
         self.assertEqual(self.passwd, self.bot.password)
 
+    def test_aleady_replied(self):
+        not_replied = self.bot.already_replied('te', [('other', 'whatever', '...')])
+        replied = self.bot.already_replied('te', [('te', '...', 'other')])
+        self.assertFalse(not_replied, msg="The bot shouldn't reply here")
+        self.assertTrue(replied, msg="The bot should reply here")
+
     def test_is_sus(self):
         max_num = 0.7
         total_matches = 1
