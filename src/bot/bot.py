@@ -147,7 +147,7 @@ class Bot(BotModel):
         return map(
             lambda i: i[:-1] if i.endswith('.') or i.endswith(',') else i,
             [word.lower() for sentence in text.split(' ')
-            for word in sentence.split('\n') if word]
+            for word in sentence.split('\n') if word]  # noqa
         )
 
     def text_is_s(self, text: str, abort_chars: List[str]):
@@ -156,8 +156,8 @@ class Bot(BotModel):
     def already_replied(self, comment_id: str, data: Any) -> bool:
         return any(comment_id in i for i in data)
 
-    def is_sus(self, text: str, samples: Iterable[str],
-               top_match: float, total_matches: int, abort_chars: List[str]) -> bool:
+    def is_sus(self, text: str, samples: Iterable[str], top_match: float,
+               total_matches: int, abort_chars: List[str]) -> bool:
         """Top part: Based on `en_core_web_lg` AI language proccessing model
         (more info in `references.txt`) of `spacy` library, this function
         checks whether the `text` provided matches with (more or equal)

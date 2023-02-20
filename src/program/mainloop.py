@@ -9,9 +9,11 @@ from generals import (
     actions,
     SCAM_SAMPLES,
     DEF_SETTINGS,
+    ERROR_LOGGER,
     SETTINGS,
     BASE_DIR,
     ascii_filter as af,
+    error_logger,
 )
 from dotenv import (
     find_dotenv,
@@ -24,9 +26,20 @@ log = logger.Logger(1, f"{BASE_DIR}/.logs.txt")
 
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
-    if post.author != bot.name and not bot.already_replied(post.id, bot.fetch_all()):
+    bot_has_replied = bot.already_replied(post.id, bot.fetch_all())
+
+    if post.author != bot.name and not bot_has_replied:
         bot.reply(type_, post.author, post.id, sub_name, post)
         print("We've a sus post in", sub_name)
+
+
+@error_logger(ERROR_LOGGER)
+def check_reply(text, samples, sta, tm, wl, post, bot,
+                sub_name, abort_chars, submission_type):
+    if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
+        bot_reply(post, bot, sub_name, submission_type)
+    if bot.is_sus(text, samples, wl, tm, abort_chars):
+        log.info(f"Saving: `{text}`")
 
 
 def mainloop():
@@ -76,25 +89,19 @@ def mainloop():
 
         for post in list(new) + list(hot):
             text = post.selftext
-            if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
-                bot_reply(post, bot, sub_name, 'post')
-            if bot.is_sus(text, samples, wl, tm, abort_chars):
-                log.info(f"Saving: `{text}`")
+            check_reply(text, samples, sta, tm, wl, post,
+                        bot, sub_name, abort_chars, 'post')
 
             for comment in post.comments:
                 if isinstance(comment, MoreComments):
                     continue
                 text = comment.body
-                if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
-                    bot_reply(comment, bot, sub_name, 'comment')
-                if bot.is_sus(text, samples, wl, tm, abort_chars):
-                    log.info(f"Saving: `{text}`")
+                check_reply(text, samples, sta, tm, wl, post, bot,
+                            sub_name, abort_chars, 'comment')
 
                 for reply in comment.replies:
                     if isinstance(reply, MoreComments):
                         continue
                     text = reply.body
-                    if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
-                        bot_reply(comment, bot, sub_name, 'comment')
-                    if bot.is_sus(text, samples, wl, tm, abort_chars):
-                        log.info(f"Saving: `{text}`")
+                    check_reply(text, samples, sta, tm, wl, post, bot,
+                                sub_name, abort_chars, 'comment')

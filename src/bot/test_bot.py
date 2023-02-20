@@ -13,8 +13,16 @@ class TestBot(unittest.TestCase):
         self.assertEqual(self.passwd, self.bot.password)
 
     def test_aleady_replied(self):
-        not_replied = self.bot.already_replied('te', [('other', 'whatever', '...')])
-        replied = self.bot.already_replied('te', [('te', '...', 'other')])
+        not_replied = self.bot.already_replied(
+            'te',
+            [('other', 'whatever', '...')]
+        )
+
+        replied = self.bot.already_replied(
+            'te',
+            [('te', '...', 'other')]
+        )
+
         self.assertFalse(not_replied, msg="The bot shouldn't reply here")
         self.assertTrue(replied, msg="The bot should reply here")
 
@@ -62,7 +70,7 @@ class TestBot(unittest.TestCase):
 
         /s
         """
-        expected = ['this', 'is', 'a', 'text', 'that', 'contains', 'new', 'lines', 'unneccesary', 'spaces', 'and', 'some', 'indentation', 'we', 'will', 'also', 'add', 'some', 'empty', 'lines', '/s']
+        expected = ['this', 'is', 'a', 'text', 'that', 'contains', 'new', 'lines', 'unneccesary', 'spaces', 'and', 'some', 'indentation', 'we', 'will', 'also', 'add', 'some', 'empty', 'lines', '/s']  # noqa
         self.assertEqual(list(self.bot._parse_text(text)), expected)
 
     def test_abort(self):
