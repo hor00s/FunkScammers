@@ -27,6 +27,22 @@ class Settings:
     def __repr__(self) -> str:
         return f"<Settings({self.all})>"
 
+    def __contains__(self, key):
+        return key in self.all
+
+    def _checkout(self):
+        """Automatically write if any changes occured in `self.conf`
+        """
+        if len(self.all) < len(self.conf):
+            for i, v in self.conf.items():
+                if i not in self.all:
+                    self.set(i, v)
+
+        elif len(self.all) > len(self.conf):
+            for i, v in self.all.items():
+                if i not in self.conf:
+                    self.pop(i)
+
     @property
     def all(self) -> dict[Any, Any]:
         """Load all the settings contained in the
@@ -42,6 +58,18 @@ class Settings:
         if not os.path.exists(self.settings_path):
             with open(self.settings_path, mode='w') as f:
                 json.dump(self.conf, f)
+        self._checkout()
+
+    def pop(self, key: Any):
+        """Remove a key from the file
+
+        :param key: The name of the key to be removed
+        :type key: Any
+        """
+        settings = self.all
+        del settings[key]
+        with open(self.settings_path, mode='w') as f:
+            json.dump(settings, f)
 
     def get(self, key: Any) -> Any:
         """Get a certain *setting* from the file

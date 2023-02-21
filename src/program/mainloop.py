@@ -11,9 +11,11 @@ from generals import (
     DEF_SETTINGS,
     ERROR_LOGGER,
     SETTINGS,
-    BASE_DIR,
+    WORTH_LOG,
     ascii_filter as af,
     error_logger,
+    increment_config,
+    reset_logs,
 )
 from dotenv import (
     find_dotenv,
@@ -22,7 +24,7 @@ from dotenv import (
 
 
 load_dotenv(find_dotenv())
-log = logger.Logger(1, f"{BASE_DIR}/.logs.txt")
+log = logger.Logger(1, WORTH_LOG)
 
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
@@ -38,7 +40,7 @@ def check_reply(text, samples, sta, tm, wl, post, bot,
                 sub_name, abort_chars, submission_type):
     if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
         bot_reply(post, bot, sub_name, submission_type)
-    if bot.is_sus(text, samples, wl, tm, abort_chars):
+    if bot.is_sus(af(text), samples, wl, tm, abort_chars):
         log.info(f"Saving: `{text}`")
 
 
@@ -51,6 +53,9 @@ def mainloop():
         **DEF_SETTINGS
     )
     settings.init()
+    increment_config(settings, 'total_runs')
+    reset_logs(WORTH_LOG, settings)
+
     # Just 2 alliases for these long-ass variable names
     sus_text_above = sta = float(settings.get('sus_text_above'))  # noqa
     total_matches = tm = int(settings.get("total_matches"))  # noqa

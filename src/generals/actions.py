@@ -2,6 +2,7 @@ import os
 import csv
 import sys
 import traceback
+from .settings import Settings
 from pathlib import Path
 from typing import (
     Generator,
@@ -18,6 +19,8 @@ __all__ = [
     'load_samples',
     'is_imported',
     'append_sample',
+    'increment_config',
+    'reset_logs',
 ]
 
 
@@ -144,3 +147,39 @@ def append_sample(path: Path, text: str) -> None:
     """
     with open(path, mode='a') as f:
         f.write('\n' + text)
+
+
+def increment_config(config_instance: Settings, config_name: Any):
+    """Increament the ammount of times the program has ran
+    in the config file
+
+    :param config_instance: The active config instance
+    :type config_instance: Settings
+    :param config_name: The name of the key
+    :type config_name: Any
+    """
+    config_instance.set(
+        config_name,
+        int(config_instance.get(config_name)) + 1
+    )
+
+
+def reset_logs(log_file: str, config_instance: Settings):
+    """Reset the log after the program has run `x` times
+
+    :param log_file: The file where the logs are stored
+    :type log_file: str
+    :param config_instance: The active `Settings` instance
+    :type config_instance: Settings
+    """
+    p = f"The {log_file} is about to be restarted.\
+ Do you want to continue(Y/N)?: "
+    total_runs = int(config_instance.get('total_runs'))
+    max_runs = int(config_instance.get('reset_logs_after'))
+    if total_runs > max_runs:
+        q = input(p)
+        if q.lower() == 'y':
+            with open(log_file, mode='w') as _: ...
+            config_instance.set('total_runs', 0)
+        else:
+            print("Aborting...")
