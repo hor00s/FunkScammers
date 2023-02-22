@@ -1,6 +1,7 @@
 import os
 import csv
 import sys
+import time
 import traceback
 from .settings import Settings
 from pathlib import Path
@@ -173,13 +174,11 @@ def reset_logs(log_file: str, config_instance: Settings):
     :type config_instance: Settings
     """
     p = f"The {log_file} is about to be restarted.\
- Do you want to continue(Y/N)?: "
+ Hit to Ctrl+C to stop it."
     total_runs = int(config_instance.get('total_runs'))
     max_runs = int(config_instance.get('reset_logs_after'))
     if total_runs > max_runs:
-        q = input(p)
-        if q.lower() == 'y':
-            with open(log_file, mode='w') as _: ...
-            config_instance.set('total_runs', 0)
-        else:
-            print("Aborting...")
+        print(p)
+        time.sleep(5)
+        with open(log_file, mode='w') as _: ...
+        config_instance.set('total_runs', 0)
