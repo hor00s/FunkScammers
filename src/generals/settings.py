@@ -33,6 +33,7 @@ class Settings:
     def _checkout(self):
         """Automatically write if any changes occured in `self.conf`
         """
+        print('this')
         if len(self.all) < len(self.conf):
             for i, v in self.conf.items():
                 if i not in self.all:
