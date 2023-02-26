@@ -1,6 +1,6 @@
 #!/bin/env python3
 import sys
-from program.program import main
+from program.program import main  # type: ignore
 
 
 """

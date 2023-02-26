@@ -25,12 +25,17 @@ settings = Settings(
 settings.init()
 
 try:
-    import spacy
+    import spacy  # type: ignore
 except ModuleNotFoundError:
     from difflib import SequenceMatcher
     print("Running with `SequenceMatcher`")
 else:
     print("Running with `spacy`")
+
+
+__all__ = [
+    'Bot'
+]
 
 
 class BotModel(Model):
@@ -142,13 +147,13 @@ class Bot(BotModel):
         return self._passwd
 
     def _parse_text(self, text: str) -> Generator[str, None, None]:
-        return map(
+        return map(  # type: ignore
             lambda i: i[:-1] if i.endswith('.') or i.endswith(',') else i,
             [word.lower() for sentence in text.split(' ')
             for word in sentence.split('\n') if word]  # noqa
         )
 
-    def text_is_s(self, text: str, abort_chars: List[str]):
+    def text_is_s(self, text: str, abort_chars: List[str]) -> bool:
         return any(i in abort_chars for i in self._parse_text(text))
 
     def already_replied(self, comment_id: str) -> bool:
@@ -204,7 +209,7 @@ class Bot(BotModel):
                         .ratio() > top_match, samples
                     ))
                 ) >= total_matches
-        return 0
+        return False
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:

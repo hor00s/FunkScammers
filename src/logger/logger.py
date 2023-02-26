@@ -211,7 +211,7 @@ class Logger(metaclass=MetaLogger):
         """
         return self._settings
 
-    def _log(self, header: str, msg: str):
+    def _log(self, header: str, msg: str) -> None:
         if self._log_path is not None:
             if not os.path.exists(self._log_path):
                 with open(self._log_path, mode='w') as _: ...
@@ -230,41 +230,41 @@ class Logger(metaclass=MetaLogger):
 
     # ONLY LOGGING FUNCTIONS AFTER THIS
     def custom(self, msg: str, header: str = 'custom',
-               *args, color: str = get_color('reset'), **kwargs) -> None:
+               *args: Any, color: str = get_color('reset'), **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{color}[{header.upper()}]: {msg}{get_color('reset')}", *args, **kwargs)
         self._log(header, msg)
 
-    def info(self, msg: str, *args, **kwargs) -> None:
+    def info(self, msg: str, *args: Any, **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{Color.YELLOW.value}[{func_name.upper()}]: {msg}{get_color('reset')}",
                   *args, **kwargs)
         self._log(func_name, msg)
 
-    def success(self, msg: str, *args, **kwargs) -> None:
+    def success(self, msg: str, *args: Any, **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{Color.GREEN.value}[{func_name.upper()}]: {msg}{get_color('reset')}",
                   *args, **kwargs)
         self._log(func_name, msg)
 
-    def warning(self, msg: str, *args, **kwargs) -> None:
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{Color.RED.value}[{func_name.upper()}]: {msg}{get_color('reset')}",
                   *args, **kwargs)
         self._log(func_name, msg)
 
-    def error(self, msg: str, *args, **kwargs) -> None:
+    def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{Color.RED_BOLD.value}[{func_name.upper()}]: {msg}{get_color('reset')}",
                   *args, **kwargs)
         self._log(func_name, msg)
 
-    def debug(self, msg: str, *args, **kwargs) -> None:
+    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
         func_name = sys._getframe().f_code.co_name
         if self._runner(func_name):
             print(f"{Color.BLUE.value}[{func_name.upper()}]: {msg}{get_color('reset')}",

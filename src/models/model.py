@@ -1,3 +1,4 @@
+from __future__ import annotations
 import sqlite3 as sqlite
 from typing import Any
 from sqlite3 import (
@@ -162,6 +163,6 @@ class Model:
         """
         self.execute(query)
 
-    def filter(self, col, val):
+    def filter(self, col: str, val: Any) -> Any:
         query = f"SELECT * FROM {self.name} WHERE {col}={val}"
         return self.execute(query, fetch=True)

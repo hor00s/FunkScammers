@@ -1,11 +1,12 @@
-from .cli import cli
+from .cli import cli  # type: ignore
+from .mainloop import mainloop  # type: ignore
+from typing import Any
 from generals import actions
 from generals.constants import ERROR_LOGGER
-from .mainloop import mainloop
 
 
 @actions.error_logger(ERROR_LOGGER)
-def main(*args, **kwargs):
+def main(*args: Any, **kwargs: Any) -> int:
     """
     The main function of the program which will run the
     appropriate function depending on whether the application

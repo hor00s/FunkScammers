@@ -18,6 +18,10 @@ class Conf(TypedDict):
     total_matches: str
     top_upvotes: str
     max_posts_lookup: str
+    worth_logging: str
+    abort_chars: list[str]
+    total_runs: int
+    reset_logs_after: int
 
 
 BASE_DIR:     Path = Path(__file__).parent.parent.parent

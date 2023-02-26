@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import csv
 import sys
@@ -150,7 +151,7 @@ def append_sample(path: Path, text: str) -> None:
         f.write('\n' + text)
 
 
-def increment_config(config_instance: Settings, config_name: Any):
+def increment_config(config_instance: Settings, config_name: Any) -> None:
     """Increament the ammount of times the program has ran
     in the config file
 
@@ -165,7 +166,7 @@ def increment_config(config_instance: Settings, config_name: Any):
     )
 
 
-def reset_logs(log_file: str, config_instance: Settings):
+def reset_logs(log_file: str, config_instance: Settings) -> None:
     """Reset the log after the program has run `x` times
 
     :param log_file: The file where the logs are stored

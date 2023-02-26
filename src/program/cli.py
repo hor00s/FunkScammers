@@ -1,4 +1,5 @@
 import os
+from typing import Any
 from generals import (
     Settings,
     SETTINGS,
@@ -29,7 +30,7 @@ settings_manager = Settings(
 settings_manager.init()
 
 
-def cli(*args, **kwargs):
+def cli(*args: Any, **kwargs: Any) -> None:
     """The cli of the. This is it runs
     if the program was triggered with command line arguments
     """

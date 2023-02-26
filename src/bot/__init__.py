@@ -1,1 +1,1 @@
-from .bot import Bot # noqa
+from .bot import * # noqa
