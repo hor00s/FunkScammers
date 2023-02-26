@@ -161,3 +161,7 @@ class Model:
             {where}
         """
         self.execute(query)
+
+    def filter(self, col, val):
+        query = f"SELECT * FROM {self.name} WHERE {col}={val}"
+        return self.execute(query, fetch=True)

@@ -179,6 +179,6 @@ def reset_logs(log_file: str, config_instance: Settings):
     max_runs = int(config_instance.get('reset_logs_after'))
     if total_runs > max_runs:
         print(p)
-        time.sleep(5)
+        time.sleep(0)
         with open(log_file, mode='w') as _: ...
         config_instance.set('total_runs', 0)

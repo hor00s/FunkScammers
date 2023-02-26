@@ -28,7 +28,7 @@ log = logger.Logger(1, WORTH_LOG)
 
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
-    bot_has_replied = bot.already_replied(post.id, bot.fetch_all())
+    bot_has_replied = bot.already_replied(post.id)
 
     if post.author != bot.name and not bot_has_replied:
         bot.reply(type_, post.author, post.id, sub_name, post)

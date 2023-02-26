@@ -153,8 +153,10 @@ class Bot(BotModel):
     def text_is_s(self, text: str, abort_chars: List[str]):
         return any(i in abort_chars for i in self._parse_text(text))
 
-    def already_replied(self, comment_id: str, data: Any) -> bool:
-        return any(comment_id in i for i in data)
+    def already_replied(self, comment_id: str) -> bool:
+        return bool(
+            self.filter("reply_id", f"'{comment_id}'")
+        )
 
     def is_sus(self, text: str, samples: Iterable[str], top_match: float,
                total_matches: int, abort_chars: List[str]) -> bool:

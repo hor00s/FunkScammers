@@ -4,7 +4,7 @@ from .bot import Bot
 
 class TestBot(unittest.TestCase):
     def setUp(self) -> None:
-        self.usernm = 'username'
+        self.usernm = 'test_db'
         self.passwd = 'password'
         self.bot = Bot(self.usernm, self.passwd)
 
@@ -13,14 +13,13 @@ class TestBot(unittest.TestCase):
         self.assertEqual(self.passwd, self.bot.password)
 
     def test_aleady_replied(self):
+        comment_id = 'fsart'
         not_replied = self.bot.already_replied(
             'te',
-            [('other', 'whatever', '...')]
         )
 
         replied = self.bot.already_replied(
-            'te',
-            [('te', '...', 'other')]
+            comment_id,
         )
 
         self.assertFalse(not_replied, msg="The bot shouldn't reply here")

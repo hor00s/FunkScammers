@@ -2,7 +2,8 @@ import os
 import io
 import unittest
 import unittest.mock
-from logger import Logger, Config
+from logger import Logger
+from .logger import Config
 
 
 class TestLogger(unittest.TestCase):
