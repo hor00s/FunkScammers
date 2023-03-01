@@ -3,7 +3,6 @@ from typing import (
     Generator,
     Iterable,
     List,
-    Any,
 )
 from praw.reddit import (  # type: ignore
     Redditor,

@@ -3,6 +3,7 @@ import os
 import csv
 import sys
 import time
+import datetime
 import traceback
 from .settings import Settings
 from pathlib import Path
@@ -27,9 +28,12 @@ __all__ = [
 
 
 def write_error(error: Exception, path: Path) -> None:
+    date_time = datetime.datetime.now()
     with open(path, mode='a') as f:
         error_format = f"""
 ---------------------------
+{date_time}
+
 Short error: {error}
 
 Detailed: {traceback.format_exc()}
