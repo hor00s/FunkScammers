@@ -35,8 +35,6 @@ logs: List[str] = []
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
     bot_has_replied = bot.already_replied(post.id)
-    is_stickied = post.is_stickied
-    print(is_stickied)
     if post.author != bot.name and not bot_has_replied:
         bot.reply(type_, post.author, post.id, sub_name, post)
         log.info("We've a sus post in", sub_name)
