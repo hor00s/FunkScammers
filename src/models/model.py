@@ -86,7 +86,7 @@ class Model:
         cols = ','.join(map(str, values.keys()))
         vals = ','.join(
             f"'{i}'" if not isinstance(i, int)
-            else str(i) for i in list(values.values())
+            else str(i) for i in values.values()
         )
 
         query = f"""

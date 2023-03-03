@@ -5,6 +5,7 @@ import sys
 import time
 import datetime
 import traceback
+from logger import Logger
 from .settings import Settings
 from pathlib import Path
 from typing import (
@@ -25,6 +26,9 @@ __all__ = [
     'increment_config',
     'reset_logs',
 ]
+
+
+log = Logger(1)
 
 
 def write_error(error: Exception, path: Path) -> None:
@@ -56,12 +60,12 @@ def error_logger(path: Path) -> Callable[[Any], Any]:
             try:
                 return func(*args, **kwargs)
             except ModuleNotFoundError as err:
-                print(err)
-                print(traceback.format_exc())
+                log.error(str(err))
+                log.error(traceback.format_exc())
                 return 1
             except Exception as err:
-                print(err)
-                print(traceback.format_exc())
+                log.error(str(err))
+                log.error(traceback.format_exc())
                 write_error(err, path)
                 return 1
         return wrapper
@@ -183,7 +187,7 @@ def reset_logs(log_file: str, config_instance: Settings) -> None:
     total_runs = int(config_instance.get('total_runs'))
     max_runs = int(config_instance.get('reset_logs_after'))
     if total_runs > max_runs:
-        print(p)
+        log.warning(p)
         time.sleep(0)
         with open(log_file, mode='w') as _: ...
         config_instance.set('total_runs', 0)

@@ -1,8 +1,3 @@
-"""
-TODO: Other magic methods
-
-TODO: Change this to a module docstring
-"""
 from __future__ import annotations
 import os
 import sys
@@ -48,7 +43,7 @@ class Color(Enum):
 
 
 def get_color(color: str) -> str:
-    return {i.name: i.value for i in Color}[color.upper()]
+    return getattr(Color, color.upper()).value  # type: ignore
 
 
 class Config:
