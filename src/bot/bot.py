@@ -290,8 +290,9 @@ and this comment will delete it self automatically!
 ^(My current rating is: {self.get_success_percentage(f_rate, s_rate)}%%\
 %s)
 
-^(I'm a bot and this action was performed automatically. Check out\
-my [source code](https://github.com/hor00s/FunkScammers) and feel free\
- to make any suggestions to make me better!)
-        """ % (f" | worst sub so far: **{sub_name}** with **{replies}**\
+---
+^(I'm a bot and this action was performed automatically. Check out \
+my) [^source ^code](https://github.com/hor00s/FunkScammers) ^(and feel free \
+to make any suggestions to make me better!)
+        """ % (f" | worst sub so far: **{sub_name}** with **{replies}** \
 total scams detected" if sub_name and replies else '',))
