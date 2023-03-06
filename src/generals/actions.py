@@ -1,8 +1,11 @@
+from __future__ import annotations
 import os
 import csv
 import sys
 import time
+import datetime
 import traceback
+from logger import Logger
 from .settings import Settings
 from pathlib import Path
 from typing import (
@@ -25,10 +28,16 @@ __all__ = [
 ]
 
 
+log = Logger(1)
+
+
 def write_error(error: Exception, path: Path) -> None:
+    date_time = datetime.datetime.now()
     with open(path, mode='a') as f:
         error_format = f"""
 ---------------------------
+{date_time}
+
 Short error: {error}
 
 Detailed: {traceback.format_exc()}
@@ -51,12 +60,12 @@ def error_logger(path: Path) -> Callable[[Any], Any]:
             try:
                 return func(*args, **kwargs)
             except ModuleNotFoundError as err:
-                print(err)
-                print(traceback.format_exc())
+                log.error(str(err))
+                log.error(traceback.format_exc())
                 return 1
             except Exception as err:
-                print(err)
-                print(traceback.format_exc())
+                log.error(str(err))
+                log.error(traceback.format_exc())
                 write_error(err, path)
                 return 1
         return wrapper
@@ -150,7 +159,7 @@ def append_sample(path: Path, text: str) -> None:
         f.write('\n' + text)
 
 
-def increment_config(config_instance: Settings, config_name: Any):
+def increment_config(config_instance: Settings, config_name: Any) -> None:
     """Increament the ammount of times the program has ran
     in the config file
 
@@ -165,7 +174,7 @@ def increment_config(config_instance: Settings, config_name: Any):
     )
 
 
-def reset_logs(log_file: str, config_instance: Settings):
+def reset_logs(log_file: str, config_instance: Settings) -> None:
     """Reset the log after the program has run `x` times
 
     :param log_file: The file where the logs are stored
@@ -178,7 +187,7 @@ def reset_logs(log_file: str, config_instance: Settings):
     total_runs = int(config_instance.get('total_runs'))
     max_runs = int(config_instance.get('reset_logs_after'))
     if total_runs > max_runs:
-        print(p)
-        time.sleep(5)
+        log.warning(p)
+        time.sleep(0)
         with open(log_file, mode='w') as _: ...
         config_instance.set('total_runs', 0)

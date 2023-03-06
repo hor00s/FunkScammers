@@ -4,29 +4,28 @@ from .bot import Bot
 
 class TestBot(unittest.TestCase):
     def setUp(self) -> None:
-        self.usernm = 'username'
+        self.usernm = 'test_db'
         self.passwd = 'password'
         self.bot = Bot(self.usernm, self.passwd)
 
-    def test_properties(self):
+    def test_properties(self) -> None:
         self.assertEqual(self.usernm, self.bot.name)
         self.assertEqual(self.passwd, self.bot.password)
 
-    def test_aleady_replied(self):
+    def test_aleady_replied(self) -> None:
+        comment_id = 'fsart'
         not_replied = self.bot.already_replied(
             'te',
-            [('other', 'whatever', '...')]
         )
 
         replied = self.bot.already_replied(
-            'te',
-            [('te', '...', 'other')]
+            comment_id,
         )
 
         self.assertFalse(not_replied, msg="The bot shouldn't reply here")
         self.assertTrue(replied, msg="The bot should reply here")
 
-    def test_is_sus(self):
+    def test_is_sus(self) -> None:
         max_num = 0.7
         total_matches = 1
         data = [
@@ -45,7 +44,7 @@ class TestBot(unittest.TestCase):
         is_sus = self.bot.is_sus(text, data, max_num, total_matches, [])
         self.assertFalse(is_sus, msg="The bot can be a little un-predicted!")
 
-    def test_get_success_percentage(self):
+    def test_get_success_percentage(self) -> None:
         v0 = self.bot.get_success_percentage(0, 10)
         self.assertEqual(v0, 100.00)
 
@@ -58,7 +57,7 @@ class TestBot(unittest.TestCase):
         v4 = self.bot.get_success_percentage(24, 8)
         self.assertEqual(v4, 25.00)
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         text = """
 
         This is a text that
@@ -73,7 +72,7 @@ class TestBot(unittest.TestCase):
         expected = ['this', 'is', 'a', 'text', 'that', 'contains', 'new', 'lines', 'unneccesary', 'spaces', 'and', 'some', 'indentation', 'we', 'will', 'also', 'add', 'some', 'empty', 'lines', '/s']  # noqa
         self.assertEqual(list(self.bot._parse_text(text)), expected)
 
-    def test_abort(self):
+    def test_abort(self) -> None:
         abort_chars = ['/s', '/j']
         text = """
 

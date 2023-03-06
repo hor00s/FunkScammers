@@ -27,10 +27,10 @@ class Settings:
     def __repr__(self) -> str:
         return f"<Settings({self.all})>"
 
-    def __contains__(self, key):
+    def __contains__(self, key: Any) -> bool:
         return key in self.all
 
-    def _checkout(self):
+    def _checkout(self) -> None:
         """Automatically write if any changes occured in `self.conf`
         """
         if len(self.all) < len(self.conf):
@@ -60,7 +60,7 @@ class Settings:
                 json.dump(self.conf, f)
         self._checkout()
 
-    def pop(self, key: Any):
+    def pop(self, key: Any) -> None:
         """Remove a key from the file
 
         :param key: The name of the key to be removed

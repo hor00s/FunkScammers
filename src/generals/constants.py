@@ -1,5 +1,8 @@
 from pathlib import Path
-from typing import TypedDict
+from typing import (
+    TypedDict,
+    List
+)
 
 
 __all__ = [
@@ -18,6 +21,10 @@ class Conf(TypedDict):
     total_matches: str
     top_upvotes: str
     max_posts_lookup: str
+    worth_logging: str
+    abort_chars: List[str]
+    total_runs: int
+    reset_logs_after: int
 
 
 BASE_DIR:     Path = Path(__file__).parent.parent.parent

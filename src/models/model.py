@@ -1,3 +1,4 @@
+from __future__ import annotations
 import sqlite3 as sqlite
 from typing import Any
 from sqlite3 import (
@@ -85,7 +86,7 @@ class Model:
         cols = ','.join(map(str, values.keys()))
         vals = ','.join(
             f"'{i}'" if not isinstance(i, int)
-            else str(i) for i in list(values.values())
+            else str(i) for i in values.values()
         )
 
         query = f"""
@@ -161,3 +162,7 @@ class Model:
             {where}
         """
         self.execute(query)
+
+    def filter(self, col: str, val: Any) -> Any:
+        query = f"SELECT * FROM {self.name} WHERE {col}={val}"
+        return self.execute(query, fetch=True)

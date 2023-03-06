@@ -1,9 +1,10 @@
+from logger import Logger
 from models import Model
 from typing import (
     Generator,
     Iterable,
+    Tuple,
     List,
-    Any,
 )
 from praw.reddit import (  # type: ignore
     Redditor,
@@ -24,15 +25,20 @@ settings = Settings(
 )
 settings.init()
 
+log = Logger(1)
+
 try:
-    import spacy
+    import spacy  # type: ignore
 except ModuleNotFoundError:
     from difflib import SequenceMatcher
-    settings.set("sus_text_above", "0.5")
-    print("Running with `SequenceMatcher`")
+    log.debug("Running with `SequenceMatcher`")
 else:
-    settings.set("sus_text_above", "0.92")
-    print("Running with `spacy`")
+    log.debug("Running with `spacy`")
+
+
+__all__ = [
+    'Bot'
+]
 
 
 class BotModel(Model):
@@ -61,7 +67,7 @@ class BotModel(Model):
                 where=f'id={last_id}'
             )
         except IndexError:
-            print('No comments have been inserted yet')
+            log.debug('No comments have been inserted yet')
 
     def insert_reply(self, author: str, rep_id: str, subs_name: str) -> None:
         """Insert a reply to the database
@@ -73,7 +79,7 @@ class BotModel(Model):
         :param subs_name: The name of the sub the comment/post was found
         :type subs_name: str
         """
-        if not len(self.fetch_all()):
+        if not self.fetch_all():
             # If the database is empty, we initialize success and fail rates
             self.insert(author=author, reply_id=rep_id,
                         success_rate=1, fail_rate=0, subs_name=subs_name)
@@ -85,7 +91,7 @@ class BotModel(Model):
                         success_rate=s_rate, fail_rate=f_rate,
                         subs_name=subs_name)
 
-    def worst_sub(self, col: str = 'subs_name') -> tuple[str, int]:
+    def worst_sub(self, col: str = 'subs_name') -> Tuple[str, int]:
         """This function will count all the subs that the bot
         has replied and return whichever it has replied the most
 
@@ -108,7 +114,7 @@ class BotModel(Model):
             k = max(counter, key=counter.get)  # type: ignore
             v = counter[k]
         except ValueError:
-            print('database is empty')
+            log.debug('database is empty')
             # Keep the return value consistent by returning a `falsy` tuple
             return ('', 0)
         else:
@@ -144,17 +150,19 @@ class Bot(BotModel):
         return self._passwd
 
     def _parse_text(self, text: str) -> Generator[str, None, None]:
-        return map(
+        return map(  # type: ignore
             lambda i: i[:-1] if i.endswith('.') or i.endswith(',') else i,
             [word.lower() for sentence in text.split(' ')
             for word in sentence.split('\n') if word]  # noqa
         )
 
-    def text_is_s(self, text: str, abort_chars: List[str]):
+    def text_is_s(self, text: str, abort_chars: List[str]) -> bool:
         return any(i in abort_chars for i in self._parse_text(text))
 
-    def already_replied(self, comment_id: str, data: Any) -> bool:
-        return any(comment_id in i for i in data)
+    def already_replied(self, comment_id: str) -> bool:
+        return bool(
+            self.filter("reply_id", f"'{comment_id}'")
+        )
 
     def is_sus(self, text: str, samples: Iterable[str], top_match: float,
                total_matches: int, abort_chars: List[str]) -> bool:
@@ -204,7 +212,7 @@ class Bot(BotModel):
                         .ratio() > top_match, samples
                     ))
                 ) >= total_matches
-        return 0
+        return False
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:
@@ -218,14 +226,14 @@ class Bot(BotModel):
         :type max_downvotes: int
         """
         comments = redditor.comments.new(limit=None)
-        print("Checking my old comments")
+        log.info("Checking my old comments")
         for comment in comments:
             if comment.score < max_downvotes:
-                print("Bad comment found")
+                log.info("Bad comment found")
                 self.comment_failed()
                 comment.delete()
             elif comment.score > max_upvotes:
-                print("Saving reply")
+                log.info("Saving reply")
                 # TODO: Save text
 
     def get_success_percentage(self, failed: int, succesed: int) -> float:
@@ -283,7 +291,6 @@ and this comment will delete it self automatically!
 %s)
 
 ---
-
 ^(I'm a bot and this action was performed automatically. Check out \
 my) [^source ^code](https://github.com/hor00s/FunkScammers) ^(and feel free \
 to make any suggestions to make me better!)

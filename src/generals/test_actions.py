@@ -1,6 +1,7 @@
 import os
 import json
 import unittest
+from pathlib import Path
 from .settings import Settings
 from .constants import SCAM_SAMPLES
 from .actions import (
@@ -17,7 +18,7 @@ class TestActions(unittest.TestCase):
     def setUp(self) -> None:
         self.scam_samples = '../samples'
 
-    def test_ascii_filter(self):
+    def test_ascii_filter(self) -> None:
         upper_limit = 127
         lower_limit = 0
 
@@ -43,15 +44,15 @@ class TestActions(unittest.TestCase):
 
         self.assertEqual(data, expected)
 
-    def test_load_samples(self):
+    def test_load_samples(self) -> None:
         for i in load_samples(SCAM_SAMPLES):
             self.assertIsInstance(i, str)
 
-    def test_is_imported(self):
+    def test_is_imported(self) -> None:
         self.assertTrue(is_imported('json'))
         self.assertFalse(is_imported('spacy'))
 
-    def test_read_file(self):
+    def test_read_file(self) -> None:
         self.assertIsInstance(read_file(SCAM_SAMPLES), str)
 
 
@@ -65,7 +66,7 @@ class TestSettings(unittest.TestCase):
         }
 
         self.settings = Settings(
-            '../.testsettings.json',
+            Path('../.testsettings.json'),
             **self.initial_settings
         )
         self.settings.init()
@@ -77,22 +78,22 @@ class TestSettings(unittest.TestCase):
         with open(self.settings.settings_path, mode='w') as f:
             json.dump(self.initial_settings, f)
 
-    def test_load_all(self):
+    def test_load_all(self) -> None:
         self.assertEqual(self.initial_settings, self.settings.all)
 
-    def test_get(self):
+    def test_get(self) -> None:
         self.assertEqual(
             self.initial_settings['key1'],
             self.settings.get('key1')
         )
 
-    def test_set(self):
+    def test_set(self) -> None:
         key = 'key1'
         value = 'test1'
         self.settings.set(key, value)
         self.assertEqual(self.settings.get(key), value)
 
-    def test_delete_logs(self):
+    def test_delete_logs(self) -> None:
         with open('test_logs.txt', mode='w') as f: f.write('tes')
 
         config_name = 'total_runs'
@@ -116,7 +117,7 @@ class TestSettings(unittest.TestCase):
         with open(test_logs, mode='r') as f:
             self.assertEqual(f.read(), '')
 
-    def test_checkout(self):
+    def test_checkout(self) -> None:
         new_key = 'new_key'
         self.settings.conf[new_key] = 'new_val'
         self.settings._checkout()
