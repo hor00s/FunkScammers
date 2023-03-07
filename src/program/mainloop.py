@@ -32,6 +32,24 @@ load_dotenv(find_dotenv())
 log = logger.Logger(1)
 logs: List[str] = []
 
+bot = Bot(
+    username=os.environ['username'],
+    password=os.environ['password'],
+)
+
+reddit = praw.Reddit(
+    client_id=os.environ['client_id'],
+    client_secret=os.environ['secret'],
+    password=bot.password,
+    user_agent=os.environ['user_agent'],
+    username=bot.name,
+)
+
+settings = Settings(
+    SETTINGS,
+    **DEF_SETTINGS
+)
+
 
 def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
     bot_has_replied = bot.already_replied(post.id)
@@ -55,10 +73,7 @@ def mainloop() -> None:
     """Mainloop of the program. This is where the actual
     bot operates.
     """
-    settings = Settings(
-        SETTINGS,
-        **DEF_SETTINGS
-    )
+
     settings.init()
     increment_config(settings, 'total_runs')
     reset_logs(str(WORTH_LOG), settings)
@@ -68,19 +83,6 @@ def mainloop() -> None:
     total_matches = tm = int(settings.get("total_matches"))  # noqa
     worth_logging = wl = float(settings.get('worth_logging'))  # noqa
     abort_chars = settings.get('abort_chars')
-
-    bot = Bot(
-        username=os.environ['username'],
-        password=os.environ['password'],
-    )
-
-    reddit = praw.Reddit(
-        client_id=os.environ['client_id'],
-        client_secret=os.environ['secret'],
-        password=bot.password,
-        user_agent=os.environ['user_agent'],
-        username=bot.name,
-    )
 
     bot.create_table()
     redditor = reddit.redditor(bot.name)
