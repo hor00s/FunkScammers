@@ -58,22 +58,20 @@ def bot_reply(post: Submission, bot: Bot, sub_name: str, type_: str) -> None:
         log.info("We've a sus post in", sub_name)
 
 
-@error_logger(ERROR_LOGGER)
 def check_reply(text: str, samples: Generator[str, None, None], sta: float,
                 tm: int, wl: float, post: Submission, bot: Bot, sub_name: str, logs: List[str],
                 abort_chars: List[str], submission_type: Literal["post", "comment"]) -> None:
-
     if bot.is_sus(af(text), samples, sta, tm, abort_chars) and text:
         bot_reply(post, bot, sub_name, submission_type)
     if bot.is_sus(af(text), samples, wl, tm, abort_chars):
         logs.append(text)
 
 
+@error_logger(ERROR_LOGGER)
 def mainloop() -> None:
     """Mainloop of the program. This is where the actual
     bot operates.
     """
-
     settings.init()
     increment_config(settings, 'total_runs')
     reset_logs(str(WORTH_LOG), settings)
