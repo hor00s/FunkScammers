@@ -1,5 +1,6 @@
 from __future__ import annotations
 import sqlite3 as sqlite
+from generals.constants import BASE_DIR
 from typing import Any
 from sqlite3 import (
     Connection,
@@ -12,7 +13,7 @@ __all__ = ['Model']
 class ConnectionManager:
     def __init__(self, name: str) -> None:
         self.name = name
-        self._connection = sqlite.connect(f"{self.name}.sqlite")
+        self._connection = sqlite.connect(f"{BASE_DIR}/{self.name}.sqlite")
 
     def __enter__(self) -> Connection:
         return self._connection

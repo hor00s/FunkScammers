@@ -199,6 +199,13 @@ class Bot(BotModel):
         if not self.text_is_s(text, abort_chars):
             if is_imported('spacy'):
                 nlp = spacy.load('en_core_web_lg')  # noqa
+                rate = len(
+                    tuple(filter(
+                        lambda sentence: nlp(sentence)
+                        .similarity(nlp(text)) > top_match, samples
+                    ))
+                ) >= total_matches
+                print(rate, text)
                 return len(
                     tuple(filter(
                         lambda sentence: nlp(sentence)
