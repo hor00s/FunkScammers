@@ -90,7 +90,7 @@ def mainloop() -> None:
 
     search_limit = int(settings.get('max_posts_lookup'))
 
-    samples = actions.load_samples(SCAM_SAMPLES)
+    samples = tuple(actions.load_samples(SCAM_SAMPLES))
     followed_subs = reddit.user.subreddits(limit=None)
 
     for sub in followed_subs:

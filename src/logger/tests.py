@@ -111,5 +111,3 @@ class TestLogger(unittest.TestCase):
         with open(file, mode='r') as f:
             self.assertEqual(f"[INFO]: {msg}", f.read()[:-1])  # Slice to remove '\n' from the file
         os.remove(file)
-
-# TODO: Test the effect of the metaclass

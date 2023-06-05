@@ -164,6 +164,14 @@ class Bot(BotModel):
             self.filter("reply_id", f"'{comment_id}'")
         )
 
+    def get_rate(self, sentence, text):
+        if is_imported('spacy'):
+            nlp = spacy.load('en_core_web_lg')
+            rate = nlp(sentence).similarity(nlp(text))
+        else:
+            rate = SequenceMatcher(None, sentence, text).ratio()
+        return rate
+
     def is_sus(self, text: str, samples: Iterable[str], top_match: float,
                total_matches: int, abort_chars: List[str]) -> bool:
         """Top part: Based on `en_core_web_lg` AI language proccessing model
@@ -197,29 +205,10 @@ class Bot(BotModel):
         :rtype: bool
         """
         if not self.text_is_s(text, abort_chars):
-            if is_imported('spacy'):
-                nlp = spacy.load('en_core_web_lg')  # noqa
-                rate = len(
-                    tuple(filter(
-                        lambda sentence: nlp(sentence)
-                        .similarity(nlp(text)) > top_match, samples
-                    ))
-                ) >= total_matches
-                print(rate, text)
-                return len(
-                    tuple(filter(
-                        lambda sentence: nlp(sentence)
-                        .similarity(nlp(text)) > top_match, samples
-                    ))
-                ) >= total_matches
-            else:
-                return len(
-                    tuple(filter(
-                        lambda sentence: SequenceMatcher(None, sentence, text)
-                        .ratio() > top_match, samples
-                    ))
-                ) >= total_matches
-        return False
+            local_matches = tuple(filter(
+                lambda sentence: self.get_rate(sentence, text) > top_match, samples
+            ))
+            return len(local_matches) >= total_matches
 
     def check_comments(self, redditor: Redditor,
                        max_downvotes: int, max_upvotes: int) -> None:

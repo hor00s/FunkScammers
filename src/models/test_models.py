@@ -17,7 +17,8 @@ class TestModel(unittest.TestCase):
 
     def test_create(self) -> None:
         self.model.create_table()
-        self.assertTrue(os.path.exists(self.model.name + '.sqlite'))
+        path = f"../{self.model.name}.sqlite"
+        self.assertTrue(os.path.exists(path))
 
     def test_insert(self) -> None:
         self.model.insert(user='john', age=25)
