@@ -30,6 +30,10 @@ settings_manager = Settings(
 settings_manager.init()
 
 
+def get_spaces(text: str, buffer: int = 20):
+    return " " * (buffer - len(text))
+
+
 def cli(*args: Any, **kwargs: Any) -> None:
     """The cli of the. This is it runs
     if the program was triggered with command line arguments
@@ -61,6 +65,10 @@ def cli(*args: Any, **kwargs: Any) -> None:
             settings_manager.set(key, value)
         elif args[2] == 'init':
             settings_manager.init()
+        elif args[2] == 'all':
+            for k, v in settings_manager.items():
+                padding = get_spaces(k)
+                print(f"{k}:{padding}{v}")
 
     # ./funcscammers sample "The text that is supposed to be in the file"
     # (preferably in one line)"

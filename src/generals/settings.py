@@ -27,6 +27,9 @@ class Settings:
     def __repr__(self) -> str:
         return f"<Settings({self.all})>"
 
+    def __getitem__(self, key: Any):
+        return self.all[key]
+
     def __contains__(self, key: Any) -> bool:
         return key in self.all
 
@@ -96,3 +99,6 @@ class Settings:
         settings[key] = value
         with open(self.settings_path, mode='w') as f:
             json.dump(settings, f, indent=4)
+
+    def items(self):
+        return self.all.items()
